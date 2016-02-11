@@ -1,5 +1,8 @@
 package scottnickamanda.sliderpuzzle;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -19,19 +22,27 @@ public class GameActivity extends AppCompatActivity {
     int blankPiece = gameSize-1;
 
     Piece[] pieces;
+    Bitmap bm;
+    Bitmap[] split;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
+        bm = BitmapFactory.decodeResource(getResources(), R.mipmap.catpicture);
+        split = splitBitmap(bm);
+
         newGame();
 
         grid = (GridView) findViewById(R.id.gridView);
 
 
-        ArrayAdapter<Piece> adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, pieces);
+        CustomAdapter adapter = new CustomAdapter(this, pieces);
 
         grid.setAdapter(adapter);
+
+
 
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
@@ -50,7 +61,7 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < gameSize - 1; i++)
 
         {
-            pieces[i] = new Piece(i);
+            pieces[i] = new Piece(i, split[i]);
         }
             pieces[gameSize-1] = new Piece(-1);
         gameInProgress = true;
@@ -70,9 +81,28 @@ public class GameActivity extends AppCompatActivity {
 
     //Switches the display of 2 pieces (blank and parameter)
     public void movePieces(int pieceNumber) {
-        int temp = pieces[pieceNumber].getNumber() - 1;
+        pieces[blankPiece].setNumber(pieces[pieceNumber].getNumber() - 1);
         pieces[pieceNumber].setNumber(-1);
-        pieces[blankPiece].setNumber(temp);
+        pieces[blankPiece].setImage(pieces[pieceNumber].getImage());
+        pieces[pieceNumber].setImage(null);
         blankPiece = pieceNumber;
+    }
+
+    public Bitmap[] splitBitmap(Bitmap picture)
+    {
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(picture, 240, 240, true);
+        Bitmap[] imgs = new Bitmap[9];
+        imgs[0] = Bitmap.createBitmap(scaledBitmap, 0, 0, 80 , 80);
+        imgs[1] = Bitmap.createBitmap(scaledBitmap, 80, 0, 80, 80);
+        imgs[2] = Bitmap.createBitmap(scaledBitmap,160, 0, 80,80);
+        imgs[3] = Bitmap.createBitmap(scaledBitmap, 0, 80, 80, 80);
+        imgs[4] = Bitmap.createBitmap(scaledBitmap, 80, 80, 80,80);
+        imgs[5] = Bitmap.createBitmap(scaledBitmap, 160, 80,80,80);
+        imgs[6] = Bitmap.createBitmap(scaledBitmap, 0, 160, 80,80);
+        imgs[7] = Bitmap.createBitmap(scaledBitmap, 80, 160,80,80);
+        imgs[8] = Bitmap.createBitmap(scaledBitmap, 160,160,80,80);
+        return imgs;
+
+
     }
 }

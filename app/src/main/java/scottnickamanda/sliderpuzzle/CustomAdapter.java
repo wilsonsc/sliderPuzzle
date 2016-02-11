@@ -7,19 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 public class CustomAdapter extends BaseAdapter {
 
     private Context context;
-    private String[] number;
-    //private int[] imageIds;
+    private Piece[] pieces;
 
-    CustomAdapter(Context context, String[] number,int[] imageIds) {
+    public CustomAdapter(Context context, Piece[] pieces) {
         this.context = context;
-        this.number = number;
-        //this.imageIds = imageIds;
+        this.pieces = pieces;
+
     }
 
     public View getView(int pos, View convertView, ViewGroup parent) {
@@ -27,19 +27,24 @@ public class CustomAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        GridView grid = (GridView)parent;
+        View customView = inflater.inflate(R.layout.pieces, null);
+        TextView tv = (TextView) customView.findViewById(R.id.textView1);
+        ImageView iv = (ImageView) customView.findViewById(R.id.imageView1);
 
-        int size = grid.getRequestedColumnWidth();
+        tv.setText(pieces[pos].toString());
+        iv.setImageBitmap(pieces[pos].getImage());
+        //iv.setScaleType(ImageView.ScaleType.FIT_END);
 
-        TextView text = new TextView(context);
-        text.setLayoutParams(new GridView.LayoutParams(size, size));
+        //int size = grid.getRequestedColumnWidth();
+
+        //TextView text = new TextView(context);
 
 
-        return text;
+        return customView;
     }
     @Override
     public int getCount() {
-        return number.length;
+        return pieces.length;
     }
 
     @Override
@@ -52,4 +57,3 @@ public class CustomAdapter extends BaseAdapter {
         return 0;
     }
 }
-
