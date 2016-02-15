@@ -31,9 +31,10 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
         bm = BitmapFactory.decodeResource(getResources(), R.mipmap.catpicture);
-        split = splitBitmap(bm);
+        split = splitBitmap(bm, 3, 240);
 
         newGame();
+
 
         grid = (GridView) findViewById(R.id.gridView);
 
@@ -41,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
         CustomAdapter adapter = new CustomAdapter(this, pieces);
 
         grid.setAdapter(adapter);
+        shuffleBoard();
 
 
 
@@ -52,6 +54,12 @@ public class GameActivity extends AppCompatActivity {
                     movePieces(position);
                 }
                 ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
+                if (blankPiece == gameSize-1 && gameInProgress)
+                    if (checkIfWon()) {
+                        Toast.makeText(getApplicationContext(), "You win!",
+                        Toast.LENGTH_SHORT).show();
+                        gameInProgress = false;
+                    }
             }
         });
     }
@@ -69,6 +77,8 @@ public class GameActivity extends AppCompatActivity {
 
     //Check to see if this is a valid move, checks 4 directions
     boolean checkMove(int pieceNumber) {
+        if (!gameInProgress)
+            return false;
         if (pieceNumber == blankPiece)
             return false;
         if (pieceNumber + columns == blankPiece ||
@@ -81,6 +91,8 @@ public class GameActivity extends AppCompatActivity {
 
     //Switches the display of 2 pieces (blank and parameter)
     public void movePieces(int pieceNumber) {
+        if (pieceNumber >= gameSize || pieceNumber < 0)
+            return;
         pieces[blankPiece].setNumber(pieces[pieceNumber].getNumber() - 1);
         pieces[pieceNumber].setNumber(-1);
         pieces[blankPiece].setImage(pieces[pieceNumber].getImage());
@@ -88,21 +100,60 @@ public class GameActivity extends AppCompatActivity {
         blankPiece = pieceNumber;
     }
 
-    public Bitmap[] splitBitmap(Bitmap picture)
+    public Bitmap[] splitBitmap(Bitmap picture,int gridSize, int pieceSize)
     {
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(picture, 240, 240, true);
-        Bitmap[] imgs = new Bitmap[9];
-        imgs[0] = Bitmap.createBitmap(scaledBitmap, 0, 0, 80 , 80);
-        imgs[1] = Bitmap.createBitmap(scaledBitmap, 80, 0, 80, 80);
-        imgs[2] = Bitmap.createBitmap(scaledBitmap,160, 0, 80,80);
-        imgs[3] = Bitmap.createBitmap(scaledBitmap, 0, 80, 80, 80);
-        imgs[4] = Bitmap.createBitmap(scaledBitmap, 80, 80, 80,80);
-        imgs[5] = Bitmap.createBitmap(scaledBitmap, 160, 80,80,80);
-        imgs[6] = Bitmap.createBitmap(scaledBitmap, 0, 160, 80,80);
-        imgs[7] = Bitmap.createBitmap(scaledBitmap, 80, 160,80,80);
-        imgs[8] = Bitmap.createBitmap(scaledBitmap, 160,160,80,80);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(picture, pieceSize*gridSize,
+                    pieceSize*gridSize, true);
+        Bitmap[] imgs = new Bitmap[gridSize*gridSize];
+
+        for (int row = 0; row < gridSize; row++) {
+            for (int column = 0; column < gridSize; column++) {
+                imgs[row*gridSize+column] = Bitmap.createBitmap(scaledBitmap, column *
+                    pieceSize, row * pieceSize, pieceSize, pieceSize);
+            }
+        }
+
         return imgs;
+    }
 
+    public void shuffleBoard() {
+        int roll;
+        for (int i = 0; i < 100; i++) {
+            roll = (int) (Math.random() * 4);
+            switch (roll) {
+                case 0:
+                    if (checkMove(blankPiece - columns)) {
+                        movePieces(blankPiece - columns);
+                    }
+                    break;
+                case 1:
+                    if (checkMove(blankPiece + columns)) {
+                        movePieces(blankPiece + columns);
+                    }
+                    break;
+                case 2:
+                    if (checkMove(blankPiece - 1)) {
+                        movePieces(blankPiece - 1);
+                    }
+                    break;
+                case 3:
+                    if (checkMove(blankPiece + 1)) {
+                        movePieces(blankPiece + 1);
+                    }
+                    break;
+                default:
+                    break;
 
+            }
+        }
+
+    }
+
+    public boolean checkIfWon() {
+        for (int i = 0; i < gameSize - 1; i++) {
+            if (pieces[i].getNumber() != i+1)
+                return false;
+        }
+        return true;
     }
 }
