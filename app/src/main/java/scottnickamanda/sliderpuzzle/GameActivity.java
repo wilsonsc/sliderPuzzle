@@ -3,8 +3,12 @@ package scottnickamanda.sliderpuzzle;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +21,6 @@ public class GameActivity extends AppCompatActivity {
     GridView grid;
     int gameSize = 9;
     int columns = 3;
-    int width = 3;
     boolean gameInProgress;
     int blankPiece = gameSize-1;
 
@@ -30,8 +33,16 @@ public class GameActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        final int width = dm.widthPixels;
+        final int height = dm.heightPixels;
         bm = BitmapFactory.decodeResource(getResources(), R.mipmap.catpicture);
-        split = splitBitmap(bm, 3, 240);
+
+        if (width > height)
+         split = splitBitmap(bm, 3, height / 3);
+        else
+        split = splitBitmap(bm, 3, width / 3);
 
         newGame();
 
@@ -48,8 +59,8 @@ public class GameActivity extends AppCompatActivity {
 
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-                //Toast.makeText(getApplicationContext(), String.valueOf(blankPiece),
-                        //Toast.LENGTH_SHORT).show();;
+              // Toast.makeText(getApplicationContext(), String.valueOf(w),
+                       //Toast.LENGTH_SHORT).show();;
                 if (checkMove(position)) {
                     movePieces(position);
                 }
@@ -96,7 +107,7 @@ public class GameActivity extends AppCompatActivity {
         pieces[blankPiece].setNumber(pieces[pieceNumber].getNumber() - 1);
         pieces[pieceNumber].setNumber(-1);
         pieces[blankPiece].setImage(pieces[pieceNumber].getImage());
-        pieces[pieceNumber].setImage(null);
+        pieces[pieceNumber].setImage(split[gameSize-1]);
         blankPiece = pieceNumber;
     }
 
@@ -112,6 +123,8 @@ public class GameActivity extends AppCompatActivity {
                     pieceSize, row * pieceSize, pieceSize, pieceSize);
             }
         }
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        imgs[gridSize*gridSize - 1] = Bitmap.createBitmap(pieceSize, pieceSize, conf);
 
         return imgs;
     }
