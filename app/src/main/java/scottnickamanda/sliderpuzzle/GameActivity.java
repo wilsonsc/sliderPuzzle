@@ -29,10 +29,17 @@ public class GameActivity extends AppCompatActivity {
     Bitmap[] split;
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            columns = extras.getInt("boardSize");
+            gameSize = columns * columns;
+            blankPiece = gameSize-1;
+        }
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         final int width = dm.widthPixels;
@@ -40,15 +47,14 @@ public class GameActivity extends AppCompatActivity {
         bm = BitmapFactory.decodeResource(getResources(), R.mipmap.catpicture);
 
         if (width > height)
-         split = splitBitmap(bm, 3, height / 3);
+         split = splitBitmap(bm, columns, height / columns);
         else
-        split = splitBitmap(bm, 3, width / 3);
-
+        split = splitBitmap(bm, columns, width / columns);
         newGame();
 
 
         grid = (GridView) findViewById(R.id.gridView);
-
+        grid.setColumnWidth(width/columns);
 
         CustomAdapter adapter = new CustomAdapter(this, pieces);
 
