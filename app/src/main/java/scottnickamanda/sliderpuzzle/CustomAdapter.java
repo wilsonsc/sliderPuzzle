@@ -10,44 +10,101 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * Custom wrote adapter to allow Piece class files to be visually shown in
+ * a grid layout.
+ *
+ * @author Scott Wilson
+ */
 
 public class CustomAdapter extends BaseAdapter {
 
+    /** context that will later be inflated */
     private Context context;
+
+    /** the pieces that adapter will display */
     private Piece[] pieces;
 
+    /**
+     * Default constructor
+     * Saves parameters for future use
+     *
+     * @param context context resource from which this class was called
+     * @param pieces array of pieces in which to display
+     */
     public CustomAdapter(Context context, Piece[] pieces) {
         this.context = context;
         this.pieces = pieces;
-
     }
 
+    /**
+     * Produces a displayable view for the display element that uses this
+     * CustomAdapter
+     *
+     * @param pos the position of the piece
+     * @param convertView a view that will be reused if present
+     * @param parent the group in which this view belongs to
+     * @return the created view
+     */
     public View getView(int pos, View convertView, ViewGroup parent) {
 
+        //Inflate context
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View customView = inflater.inflate(R.layout.pieces, null);
-        TextView tv = (TextView) customView.findViewById(R.id.textView1);
-        ImageView iv = (ImageView) customView.findViewById(R.id.imageView1);
+        //If we are able to reuse the convertView we will, otherwise we will create a new view
+        if (convertView == null) {
+            //Create a new view
+            View customView = inflater.inflate(R.layout.pieces, null);
+            //Add a TextView with parameters defined in xml
+            TextView tv = (TextView) customView.findViewById(R.id.textView1);
+            //Add an ImageView with parameters defined in xml
+            ImageView iv = (ImageView) customView.findViewById(R.id.imageView1);
 
-        tv.setText(pieces[pos].toString());
-        iv.setImageBitmap(pieces[pos].getImage());
+            //Set the text of the TextView
+            tv.setText(pieces[pos].toString());
+            //Set the image of the ImageView
+            iv.setImageBitmap(pieces[pos].getImage());
 
+            //Return the View now that it has all elements attached to it
+            return customView;
+        }
+        //There is an existing view that we may recycle, use it
+        else {
+            //Add a TextView with parameters defined in xml
+            TextView tv = (TextView) convertView.findViewById(R.id.textView1);
+            //Add an ImageView with parameters defined in xml
+            ImageView iv = (ImageView) convertView.findViewById(R.id.imageView1);
 
-        return customView;
+            //Set the text of the TextView
+            tv.setText(pieces[pos].toString());
+            //Set the image of the ImageView
+            iv.setImageBitmap(pieces[pos].getImage());
+        }
+        //Return the View now that it has all elements attached to it
+        return convertView;
+
     }
-    @Override
+
+    /**
+     * A count of the number of pieces involved in this view
+     *
+     * @return the number of pieces
+     */
     public int getCount() {
         return pieces.length;
     }
 
-    @Override
+    /**
+     * This method does nothing, it has to be here because we extended BaseAdapter
+     */
     public Object getItem(int position) {
         return null;
     }
 
-    @Override
+    /**
+     * This method does nothing, it has to be here because we extended BaseAdapter
+     */
     public long getItemId(int position) {
         return 0;
     }
