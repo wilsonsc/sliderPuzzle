@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:gravity="center"
     android:layout_gravity="center">
+    <TextView
+        android:id="@+id/textSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/selectSize"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        />
+
     <Spinner
         android:id="@+id/selectSize"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/textSelect"
+        android:layout_toEndOf="@id/textSelect"
+        />
 
-    </Spinner>
     <Button android:id="@+id/newGame"
+        android:layout_below="@+id/selectSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start new game" />
+        android:text="@string/startNew"
+        />
 
-</LinearLayout>
+</RelativeLayout>

@@ -2,27 +2,25 @@ package scottnickamanda.sliderpuzzle;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class GameActivity extends AppCompatActivity {
 
     GridView grid;
+    TextView moveCount;
     int gameSize = 9;
     int columns = 3;
     boolean gameInProgress;
     int blankPiece = gameSize-1;
+    int moveCounter = 0;
 
     Piece[] pieces;
     Bitmap bm;
@@ -50,16 +48,20 @@ public class GameActivity extends AppCompatActivity {
          split = splitBitmap(bm, columns, height / columns);
         else
         split = splitBitmap(bm, columns, width / columns);
-        newGame();
-
-
         grid = (GridView) findViewById(R.id.gridView);
+        moveCount = (TextView) findViewById(R.id.movesMade);
+        newGame();
+        shuffleBoard();
+
+
         grid.setColumnWidth(width/columns);
 
         CustomAdapter adapter = new CustomAdapter(this, pieces);
 
+
         grid.setAdapter(adapter);
-        shuffleBoard();
+
+
 
 
 
@@ -69,6 +71,8 @@ public class GameActivity extends AppCompatActivity {
                        //Toast.LENGTH_SHORT).show();;
                 if (checkMove(position)) {
                     movePieces(position);
+                    moveCounter++;
+                    moveCount.setText("Moves made: " + moveCounter);
                 }
                 ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
                 if (blankPiece == gameSize-1 && gameInProgress)
@@ -115,6 +119,7 @@ public class GameActivity extends AppCompatActivity {
         pieces[blankPiece].setImage(pieces[pieceNumber].getImage());
         pieces[pieceNumber].setImage(split[gameSize-1]);
         blankPiece = pieceNumber;
+
     }
 
     public Bitmap[] splitBitmap(Bitmap picture,int gridSize, int pieceSize)
@@ -137,7 +142,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void shuffleBoard() {
         int roll;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < gameSize*gameSize*2; i++) {
             roll = (int) (Math.random() * 4);
             switch (roll) {
                 case 0:
@@ -165,7 +170,6 @@ public class GameActivity extends AppCompatActivity {
 
             }
         }
-
     }
 
     public boolean checkIfWon() {

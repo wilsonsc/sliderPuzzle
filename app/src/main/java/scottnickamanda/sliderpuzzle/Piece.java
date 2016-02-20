@@ -4,12 +4,7 @@ import android.graphics.Bitmap;
 
 public class Piece {
     private int number;
-    private int imageId;
     private Bitmap image;
-
-    public Piece() {
-        super();
-    }
 
     public Piece(int number) {
         super();
@@ -26,9 +21,6 @@ public class Piece {
         return number;
     }
 
-    public int getimageId() {
-        return imageId;
-    }
     public Bitmap getImage() {
         return image;
     }
@@ -37,9 +29,6 @@ public class Piece {
         this.number = number + 1;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
-    }
     public void setImage(Bitmap image) {
         this.image = image;
     }

@@ -33,11 +33,6 @@ public class CustomAdapter extends BaseAdapter {
 
         tv.setText(pieces[pos].toString());
         iv.setImageBitmap(pieces[pos].getImage());
-        //iv.setScaleType(ImageView.ScaleType.FIT_END);
-
-        //int size = grid.getRequestedColumnWidth();
-
-        //TextView text = new TextView(context);
 
 
         return customView;
