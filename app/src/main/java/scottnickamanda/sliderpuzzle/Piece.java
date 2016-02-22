@@ -19,7 +19,6 @@ public class Piece {
      * @param number the number that should be held as data for the piece
      */
     public Piece(int number) {
-        super();
         //Incremented +1 for user visualization of starting at 1 instead of 0
         this.number = number + 1;
     }
@@ -32,7 +31,6 @@ public class Piece {
      * @param image the image in which to set the piece to
      */
     public Piece(int number, Bitmap image) {
-        super();
         //Incremented +1 for user visualization of starting at 1 instead of 0
         this.number = number + 1;
         this.image = image;

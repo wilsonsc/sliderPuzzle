@@ -22,7 +22,7 @@ public class CustomAdapter extends BaseAdapter {
     /** context that will later be inflated */
     private Context context;
 
-    /** the pieces that adapter will display */
+    /** the pieces that the adapter will display */
     private Piece[] pieces;
 
     /**
@@ -30,11 +30,11 @@ public class CustomAdapter extends BaseAdapter {
      * Saves parameters for future use
      *
      * @param context context resource from which this class was called
-     * @param pieces array of pieces in which to display
+     * @param board the current game board
      */
-    public CustomAdapter(Context context, Piece[] pieces) {
+    public CustomAdapter(Context context, GameBoard board) {
         this.context = context;
-        this.pieces = pieces;
+        pieces = board.getPieces();
     }
 
     /**
