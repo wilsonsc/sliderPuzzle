@@ -12,13 +12,16 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
+/***********************************************************************
  * JUnit Tests
  *
- */
+ * @author Scott Wilson
+ **********************************************************************/
 public class GameActivityTest {
-    //Initialize a new GameBoard
+
+    /** Initialize a new GameBoard */
     GameBoard board = new GameBoard(3);
+
     //Tests if game is in progress
     @Test
     public void testGame() {
@@ -106,6 +109,4 @@ public class GameActivityTest {
         assertEquals("", testPieces[24].toString());
         assertEquals(21, testPieces[20].getNumber());
     }
-
-
 }

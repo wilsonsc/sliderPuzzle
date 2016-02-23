@@ -107,21 +107,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });}
 
-    /**
+    /*******************************************************************
      * Helper variable to access the custom board defined user board size
      *
      * @return the currently selected size
-     */
+     ******************************************************************/
     static int getSize() {
 
         return currentSize;
     }
 
-    /**
+    /*******************************************************************
      * Helper variable to set the user's selected custom size
      *
      * @param size the size in which the user wants the board to be
-     */
+     ******************************************************************/
     static void setSize(int size) {
 
         currentSize = size;
