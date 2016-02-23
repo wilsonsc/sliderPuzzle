@@ -12,19 +12,22 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
+/***********************************************************************
  * Main activity class for the Slider Puzzle game
- * Displays pieces on a grid format, requires user interaction, has move counts
+ * Displays pieces on a grid format, requires user interaction, has move
+ * counts
  *
  * @author Scott Wilson
- */
+ **********************************************************************/
 public class GameActivity extends AppCompatActivity {
 
-    /* GridView to display the individual pieces in*/
+    /** GridView to display the individual pieces in */
     GridView grid;
-    /* TextView to display the number of moves a player has made*/
+
+    /** TextView to display the number of moves a player has made */
     TextView moveCount;
-    /* The custom adapter that will be used to display the pieces in the GridView*/
+
+    /** The custom adapter used to display the pieces in the GridView */
     CustomAdapter adapter;
 
     GameBoard board;
@@ -32,62 +35,79 @@ public class GameActivity extends AppCompatActivity {
     Bitmap[] choppedImage;
 
 
-    /**
+    /*******************************************************************
      * First called when the activity is started
      * Creates the GridView board layout
      * Initializes all elements for the user to begin playing
      *
      * @param savedInstanceState currently unused parameter
-     */
+     ******************************************************************/
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
-        //Retrieve information about the physical size of the users device
+
+        //Retrieves information about the physical size of the users
+        //device
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
+
         //Store the width and height of the device
         final int width = dm.widthPixels;
         final int height = dm.heightPixels;
-        //Set the physical dimensions of the device
-        //Check if the user has selected a custom board size from the previous activity
+
+        //Sets the physical dimensions of the device
+        //Check if user has selected a custom board size
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             //Apply the user's selection
             board = new GameBoard(extras.getInt("boardSize"));
         }
+
+        //Otherwise sets GameBoard size to 3
         else
             board = new GameBoard(3);
 
-        //Initialize the image to be used in this puzzle
-        image = BitmapFactory.decodeResource(getResources(), R.mipmap.catpicture);
+        //Initializes the image to be used in this puzzle
+        image = BitmapFactory.decodeResource(getResources(),
+                R.mipmap.catpicture);
 
-        //Check to see which dimension of the users device is smaller
+        //Checks to see which dimension of the users device is smaller
         if (width > height)
+
             //Width is greater, create pieces the size of the height
-            board.setImages(splitBitmap(image, board.getColumns(), height / board.getColumns()));
+            board.setImages(splitBitmap(image, board.getColumns(),
+                    height / board.getColumns()));
         else
             //Height is greater, create pieces the size of the width
-            board.setImages(splitBitmap(image, board.getColumns(), width / board.getColumns()));
+            board.setImages(splitBitmap(image, board.getColumns(),
+                    width / board.getColumns()));
 
         //Initialize grid based off parameters declared in xml
         grid = (GridView) findViewById(R.id.gridView);
+
         //Initialize move counter based off parameters declared in xml
         moveCount = (TextView) findViewById(R.id.movesMade);
+
         //Start a new game
         board.newGame();
+
         //Shuffle the pieces on the board
         board.shuffleBoard();
-        //Set the size of the columns in the GridView based off users device dimensions
+
+        //Set size of the columns in GridView based off users device
+        //dimensions
         grid.setColumnWidth(width/board.getColumns());
+
         //Set the custom adapter with this context and the array of pieces
         adapter = new CustomAdapter(this, board);
         //Set this adapter to the grid
         grid.setAdapter(adapter);
 
-        /**
+        /***************************************************************
          * A click listener for the grid
          * When user clicks on a valid piece it will move appropriately
-         */
+         **************************************************************/
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
              * Defines what happens when the user clicks on a given piece
@@ -98,20 +118,25 @@ public class GameActivity extends AppCompatActivity {
              * @param id the id of the piece clicked
              */
             public void onItemClick(AdapterView parent, View v, int position, long id) {
+
                 //Check if the user clicked on a valid move position
                 if (board.checkMove(position)) {
                     //Move the pieces appropriately
                     board.movePieces(position);
-                    moveCount.setText("Moves made: " + board.getMoveCounter());
-                    //Notify the adapter that data has changed, it will redraw
+                    moveCount.setText("Moves made: " +
+                            board.getMoveCounter());
+                    //Notify adapter that data has changed and redraw
                     ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
+
                     //Check if a game is in progress
                     if (board.getGameProgress())
+
                         //Check to see if the user won
                         if (board.checkIfWon()) {
                             //Tell the user they won
-                            Toast.makeText(getApplicationContext(), "You win!",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),
+                                    "You win!", Toast.LENGTH_SHORT)
+                                    .show();
                         }
                 }
             }
@@ -119,32 +144,38 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-    /**
+    /*******************************************************************
      * Chops the image to be used for the game up into smaller pieces
      *
      * @param picture the picture in which is to be chopped up
-     * @param gridSize the size of the grid in which the game will be played on
-     * @param pieceSize the physical dimensions in pixels of the chopped pieces
+     * @param gridSize size of the grid the game will be played on
+     * @param pieceSize the physical dimensions in pixels of the pieces
      * @return an array containing the chopped up pieces
-     */
+     ******************************************************************/
     Bitmap[] splitBitmap(Bitmap picture,int gridSize, int pieceSize) {
-        //Create a bitmap image based upon the original image that is able to be chopped
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(picture, pieceSize*gridSize,
-                    pieceSize*gridSize, true);
+
+        //Create a bitmap image based upon the original image
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(picture,
+                pieceSize*gridSize, pieceSize*gridSize, true);
+
         //Create the array in which the chopped images will be saved in
         Bitmap[] images = new Bitmap[gridSize*gridSize];
 
         //Iterate and create images row by row
         for (int row = 0; row < gridSize; row++) {
             for (int column = 0; column < gridSize; column++) {
-                images[row*gridSize+column] = Bitmap.createBitmap(scaledBitmap, column *
-                    pieceSize, row * pieceSize, pieceSize, pieceSize);
+                images[row*gridSize+column] = Bitmap.createBitmap
+                        (scaledBitmap, column * pieceSize,
+                                row * pieceSize, pieceSize, pieceSize);
             }
         }
+
         //Create a blank image for the blank piece
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+
         //Assign it to the array
-        images[gridSize*gridSize - 1] = Bitmap.createBitmap(pieceSize, pieceSize, conf);
+        images[gridSize*gridSize - 1] = Bitmap.createBitmap
+                (pieceSize, pieceSize, conf);
 
         return images;
     }
