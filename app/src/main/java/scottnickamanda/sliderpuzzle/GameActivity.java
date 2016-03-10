@@ -144,6 +144,8 @@ public class GameActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),
                                     "You win!", Toast.LENGTH_SHORT)
                                     .show();
+                            //Refresh adapter to hide numbers
+                            ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
                         }
                 }
             }

@@ -139,6 +139,7 @@ public class GameBoard {
 
         //Game is over, set variable appropriately
         gameInProgress = false;
+        hideNumbers();
         return true;
     }
 
@@ -274,5 +275,16 @@ public class GameBoard {
     public int getBoardSize() {
 
         return gameSize;
+    }
+
+    /*******************************************************************
+     * Game has been won, hide the numbers so the picture is visible
+     *
+     * @return value of the size of the game
+     ******************************************************************/
+    public void hideNumbers() {
+        for (int i = 0; i < pieces.length; i++) {
+            pieces[i].setNumber(-1);
+        }
     }
 }
