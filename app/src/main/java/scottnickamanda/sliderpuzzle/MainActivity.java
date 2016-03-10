@@ -81,6 +81,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //Create a button based off xml defined values
+        Button selectImage = (Button) findViewById(R.id.selectImage);
+
+        //Create a listener for the button
+        selectImage.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * Begins the game when the user clicks the button
+             *
+             * @param v the view of the button
+             */
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getBaseContext(),
+                        SelectImageActivity.class);
+
+                //If the user selected a custom board size,
+                //add this as an extra in the intent
+
+                //Begin
+                startActivity(intent);
+            }
+        });
 
         //Create a button based off xml defined values
         Button launchGame = (Button) findViewById(R.id.newGame);
@@ -105,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
                 //Begin
                 startActivity(intent);
             }
-        });}
+        });
+    }
 
     /*******************************************************************
      * Helper variable to access the custom board defined user board size

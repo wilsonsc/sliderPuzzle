@@ -70,7 +70,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Initializes the image to be used in this puzzle
         image = BitmapFactory.decodeResource(getResources(),
-                R.mipmap.catpicture);
+                R.drawable.cat);
 
         //Checks to see which dimension of the users device is smaller
         if (width > height)
