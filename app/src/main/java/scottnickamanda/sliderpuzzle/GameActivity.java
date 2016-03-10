@@ -32,7 +32,6 @@ public class GameActivity extends AppCompatActivity {
 
     GameBoard board;
     Bitmap image;
-    Bitmap[] choppedImage;
 
 
     /*******************************************************************
@@ -168,7 +167,7 @@ public class GameActivity extends AppCompatActivity {
                 pieceSize*gridSize, pieceSize*gridSize, true);
 
         //Create the array in which the chopped images will be saved in
-        Bitmap[] images = new Bitmap[gridSize*gridSize];
+        Bitmap[] images = new Bitmap[gridSize*gridSize+1];
 
         //Iterate and create images row by row
         for (int row = 0; row < gridSize; row++) {
@@ -178,14 +177,13 @@ public class GameActivity extends AppCompatActivity {
                                 row * pieceSize, pieceSize, pieceSize);
             }
         }
-
+        images[gridSize*gridSize] = images[gridSize*gridSize-1];
         //Create a blank image for the blank piece
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 
         //Assign it to the array
-        images[gridSize*gridSize - 1] = Bitmap.createBitmap
+        images[gridSize*gridSize-1] = Bitmap.createBitmap
                 (pieceSize, pieceSize, conf);
-
         return images;
     }
 

@@ -137,9 +137,8 @@ public class GameBoard {
                 return false;
         }
 
-        //Game is over, set variable appropriately
-        gameInProgress = false;
-        hideNumbers();
+        //Game is over, call end of game method
+        endGame();
         return true;
     }
 
@@ -278,13 +277,17 @@ public class GameBoard {
     }
 
     /*******************************************************************
-     * Game has been won, hide the numbers so the picture is visible
+     * Game has been won, set to not in progress, hide numbers
+     * and return the final missing image tile
      *
      * @return value of the size of the game
      ******************************************************************/
-    public void hideNumbers() {
+    public void endGame() {
+        gameInProgress = false;
         for (int i = 0; i < pieces.length; i++) {
             pieces[i].setNumber(-1);
         }
+        //Restore the final missing image tile
+        pieces[gameSize-1].setImage(choppedImage[gameSize]);
     }
 }
