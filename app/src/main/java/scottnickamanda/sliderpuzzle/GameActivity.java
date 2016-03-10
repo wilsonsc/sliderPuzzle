@@ -59,9 +59,10 @@ public class GameActivity extends AppCompatActivity {
         //Sets the physical dimensions of the device
         //Check if user has selected a custom board size
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        if (extras.getInt("boardSize") != 0){
             //Apply the user's selection
             board = new GameBoard(extras.getInt("boardSize"));
+
         }
 
         //Otherwise sets GameBoard size to 3
@@ -69,8 +70,14 @@ public class GameActivity extends AppCompatActivity {
             board = new GameBoard(3);
 
         //Initializes the image to be used in this puzzle
-        image = BitmapFactory.decodeResource(getResources(),
-                R.drawable.cat);
+        if (extras.getInt("imageID") != 0 ) {
+            image = BitmapFactory.decodeResource(getResources(),
+                    extras.getInt("imageID"));
+        }
+        else {
+            image = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.cat);
+        }
 
         //Checks to see which dimension of the users device is smaller
         if (width > height)

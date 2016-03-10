@@ -6,6 +6,7 @@
     <string name="startNew">Start New Game</string>
     <string name="zeroMoves">Moves made: 0</string>
     <string name="selectImage">Select an Image</string>
+    <string name="select">Select </string>
 
     <string-array name="possibleGameSizes">
         <item> 3x3 </item>

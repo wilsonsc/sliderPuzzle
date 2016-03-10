@@ -1,21 +1,13 @@
 package scottnickamanda.sliderpuzzle;
 
 import android.content.Intent;
-import android.os.DropBoxManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /***********************************************************************
  * The first screen displayed upon opening the application
@@ -26,7 +18,10 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     /** The currently selected custom size of the game, if any*/
-    static int currentSize;
+    int currentSize;
+    int customImageID;
+    final int CUSTOM_IMAGE_REQUEST = 13;
+
 
     /*******************************************************************
      * Called upon loading the application
@@ -71,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                                        int position, long id) {
 
                 //Set the custom size to the index of the item + 3
-                setSize(position+3);
+                currentSize = (position+3);
             }
 
             /***********************************************************
@@ -101,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 //add this as an extra in the intent
 
                 //Begin
-                startActivity(intent);
+                startActivityForResult(intent, CUSTOM_IMAGE_REQUEST);
             }
         });
 
@@ -121,9 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getBaseContext(),
                         GameActivity.class);
 
-                //If the user selected a custom board size,
-                //add this as an extra in the intent
-                intent.putExtra("boardSize",getSize());
+                //If the user selected a custom board size or image
+                //add them as an extra in the intent
+                intent.putExtra("boardSize",currentSize);
+                intent.putExtra("imageID", customImageID);
 
                 //Begin
                 startActivity(intent);
@@ -131,24 +127,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /*******************************************************************
-     * Helper variable to access the custom board defined user board size
-     *
-     * @return the currently selected size
-     ******************************************************************/
-    static int getSize() {
-
-        return currentSize;
-    }
-
-    /*******************************************************************
-     * Helper variable to set the user's selected custom size
-     *
-     * @param size the size in which the user wants the board to be
-     ******************************************************************/
-    static void setSize(int size) {
-
-        currentSize = size;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == CUSTOM_IMAGE_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+                customImageID = (int) data.getExtras().getLong("imageID");
+            }
+        }
     }
 }
 

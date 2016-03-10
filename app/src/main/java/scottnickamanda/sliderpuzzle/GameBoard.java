@@ -1,8 +1,6 @@
 package scottnickamanda.sliderpuzzle;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 /***********************************************************************
  * Controls the board for the Slider puzzle game

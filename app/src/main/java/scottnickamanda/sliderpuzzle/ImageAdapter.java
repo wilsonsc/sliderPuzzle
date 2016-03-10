@@ -31,7 +31,7 @@ public class ImageAdapter extends BaseAdapter{
 
     /**
      * A count of how many images are currently to be displayed
-     * @return
+     * @return the number of images
      */
     public int getCount() {
         return mThumbIds.length;
@@ -41,14 +41,17 @@ public class ImageAdapter extends BaseAdapter{
      * This method does nothing, it is here because we extended BaseAdapter
      */
     public Object getItem(int position) {
-        return null;
+        return mThumbIds[position];
     }
 
     /**
-     * This method does nothing, it is here because we extended BaseAdapter
+     * Allows access of the ID of a selected image
+     *
+     * @param position the position in the adapter corresponding to the image
+     * @return the numerical id of the image
      */
     public long getItemId(int position) {
-        return 0;
+        return mThumbIds[position];
     }
 
     //Create a new ImageView for each item referenced by the Adapter
@@ -72,6 +75,10 @@ public class ImageAdapter extends BaseAdapter{
     //References to our images
     private Integer[] mThumbIds = {
             R.drawable.cat,
-            R.drawable.monkey
+            R.drawable.monkey,
+            R.drawable.lemurs,
+            R.drawable.tiger,
+            R.drawable.palousefalls,
+            R.drawable.prismaticsprings
     };
 }
