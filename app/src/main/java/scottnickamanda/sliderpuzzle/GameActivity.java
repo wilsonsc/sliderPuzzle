@@ -178,12 +178,14 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         images[gridSize*gridSize] = images[gridSize*gridSize-1];
-        //Create a blank image for the blank piece
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+
+        //Create a bitmap image for the blank piece and resize
+        Bitmap greyImage = BitmapFactory.decodeResource(getResources(), R.drawable.greyimage);
+        Bitmap greyImageResized = Bitmap.createScaledBitmap(greyImage, pieceSize, pieceSize, true);
 
         //Assign it to the array
         images[gridSize*gridSize-1] = Bitmap.createBitmap
-                (pieceSize, pieceSize, conf);
+                (greyImageResized);
         return images;
     }
 
