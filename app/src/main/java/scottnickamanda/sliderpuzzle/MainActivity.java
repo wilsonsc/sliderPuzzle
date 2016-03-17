@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         //Create a button based off xml defined values
         Button selectImage = (Button) findViewById(R.id.selectImage);
 
@@ -127,18 +128,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /*******************************************************************
+     * FIX ME PLEASE
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     ******************************************************************/
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+
         // Check which request we're responding to
         if (requestCode == CUSTOM_IMAGE_REQUEST) {
+
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
+                // The Intent's data Uri identifies the contact selected.
                 customImageID = (int) data.getExtras().getLong("imageID");
             }
         }
     }
 }
-
-
-

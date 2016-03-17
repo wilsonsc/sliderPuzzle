@@ -202,7 +202,8 @@ public class GameBoard {
             return;
 
         //Sets the blank piece to the values in the user clicked piece
-        pieces[blankPiece].setNumber(pieces[pieceNumber].getNumber() - 1);
+        pieces[blankPiece].setNumber(pieces[pieceNumber]
+                .getNumber() - 1);
         pieces[blankPiece].setImage(pieces[pieceNumber].getImage());
 
         //Sets the user clicked piece to the values of the blank piece
