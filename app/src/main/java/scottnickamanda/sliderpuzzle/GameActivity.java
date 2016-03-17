@@ -5,12 +5,11 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 /***********************************************************************
  * Main activity class for the Slider Puzzle game
@@ -32,7 +31,6 @@ public class GameActivity extends AppCompatActivity {
 
     GameBoard board;
     Bitmap image;
-
 
     /*******************************************************************
      * First called when the activity is started
@@ -132,7 +130,8 @@ public class GameActivity extends AppCompatActivity {
                     moveCount.setText("Moves made: " +
                             board.getMoveCounter());
                     //Notify adapter that data has changed and redraw
-                    ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
+                    ((BaseAdapter) grid.getAdapter())
+                            .notifyDataSetChanged();
 
                     //Check if a game is in progress
                     if (board.getGameProgress())
@@ -144,13 +143,77 @@ public class GameActivity extends AppCompatActivity {
                                     "You win!", Toast.LENGTH_SHORT)
                                     .show();
                             //Refresh adapter to hide numbers
-                            ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
+                            ((BaseAdapter) grid.getAdapter())
+                                    .notifyDataSetChanged();
                         }
                 }
             }
         });
     }
 
+    /*******************************************************************
+     * Overrides method in Menu class. Initializes the contents of the
+     * Game Activity's standard options menu.
+     *
+     * @param menu The options menu in which the items are placed
+     * @return true Must return true for the menu to be displayed
+     ******************************************************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_gameactivity, menu);
+        return true;
+    }
+
+    /*******************************************************************
+     * Overrides method in MenuItem class. Called whenever an item in
+     * the Game Activity menu is selected.
+     *
+     * @param item The menu item that was selected
+     * @return true  Consume menu processing here
+     *         false Allows normal menu processing to proceed
+     ******************************************************************/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // if reset button was selected
+        if(item.getItemId() == R.id.reset) {
+
+            // if game is in progress, reset the board
+            if (board.getGameProgress()) {
+                resetBoard();
+                return true;
+            }
+
+            // otherwise return to Main Activity
+            else {
+                finish();
+                return true;
+            }
+        }
+
+        return false;
+
+//      If we want to have more menu options later:
+//        switch (item.getItemID()) {
+//            case R.id.reset:
+//                  resetBoard();
+//                  return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+    }
+
+    /*******************************************************************
+     * Shuffles the board and resets move counter text
+     ******************************************************************/
+    private void resetBoard() {
+
+        board.shuffleBoard();
+        moveCount.setText("Moves made: " +
+                board.getMoveCounter());
+        ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
+    }
 
     /*******************************************************************
      * Chops the image to be used for the game up into smaller pieces
@@ -180,14 +243,14 @@ public class GameActivity extends AppCompatActivity {
         images[gridSize*gridSize] = images[gridSize*gridSize-1];
 
         //Create a bitmap image for the blank piece and resize
-        Bitmap greyImage = BitmapFactory.decodeResource(getResources(), R.drawable.greyimage);
-        Bitmap greyImageResized = Bitmap.createScaledBitmap(greyImage, pieceSize, pieceSize, true);
+        Bitmap greyImage = BitmapFactory.decodeResource(getResources(),
+                R.drawable.greyimage);
+        Bitmap greyImageResized = Bitmap.createScaledBitmap(greyImage,
+                pieceSize, pieceSize, true);
 
         //Assign it to the array
         images[gridSize*gridSize-1] = Bitmap.createBitmap
                 (greyImageResized);
         return images;
     }
-
-
 }
