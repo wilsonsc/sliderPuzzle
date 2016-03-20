@@ -3,10 +3,13 @@ package scottnickamanda.sliderpuzzle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 /***********************************************************************
@@ -20,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     /** The currently selected custom size of the game, if any*/
     int currentSize;
     int customImageID;
+    ImageView currentImage;
     final int CUSTOM_IMAGE_REQUEST = 13;
 
 
@@ -36,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
         //Set the display based off values defined in xml
         setContentView(R.layout.main);
 
+        //Retrieves information about the physical size of the users
+        //device
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        //Store the width and height of the device
+        final int width = dm.widthPixels;
+
         /** The possible sizes the user may select for the game*/
         String[] sizes = new String[] {"3x3", "4x4", "5x5"};
 
@@ -47,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         Spinner gameSize = (Spinner) findViewById(R.id.selectSize);
 
         //Sets the adapter for the dropdown box
+        gameSize.getLayoutParams().width = width / 6;
         gameSize.setAdapter(adapter);
         gameSize.setOnItemSelectedListener
                 (new AdapterView.OnItemSelectedListener() {
@@ -76,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        currentImage = (ImageView) findViewById(R.id.currentImage);
+        currentImage.getLayoutParams().height = width;
+        currentImage.getLayoutParams().width = width;
+        currentImage.setPadding(2, 2, 2, 2);
+
 
         //Create a button based off xml defined values
         Button selectImage = (Button) findViewById(R.id.selectImage);
@@ -98,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //Begin
                 startActivityForResult(intent, CUSTOM_IMAGE_REQUEST);
+
             }
         });
 
@@ -146,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 // The user picked a contact.
                 // The Intent's data Uri identifies the contact selected.
                 customImageID = (int) data.getExtras().getLong("imageID");
+                currentImage.setImageResource(customImageID);
             }
         }
     }

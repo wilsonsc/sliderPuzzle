@@ -53,7 +53,6 @@ public class GameActivity extends AppCompatActivity {
         final int width = dm.widthPixels;
         final int height = dm.heightPixels;
 
-        //Sets the physical dimensions of the device
         //Check if user has selected a custom board size
         Bundle extras = getIntent().getExtras();
         if (extras.getInt("boardSize") != 0){
@@ -177,38 +176,22 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // if reset button was selected
-        if(item.getItemId() == R.id.reset) {
 
-            // if game is in progress, reset the board
-            if (board.getGameProgress()) {
+        switch (item.getItemId()) {
+            case R.id.reset:
                 resetBoard();
                 return true;
-            }
-
-            // otherwise return to Main Activity
-            else {
+            case R.id.returnToMenu:
                 finish();
-                return true;
-            }
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return false;
-
-//      If we want to have more menu options later:
-//        switch (item.getItemID()) {
-//            case R.id.reset:
-//                  resetBoard();
-//                  return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
     }
 
-    /*******************************************************************
-     * Shuffles the board and resets move counter text
-     ******************************************************************/
+
     private void resetBoard() {
 
+        board.newGame();
         board.shuffleBoard();
         moveCount.setText("Moves made: " +
                 board.getMoveCounter());

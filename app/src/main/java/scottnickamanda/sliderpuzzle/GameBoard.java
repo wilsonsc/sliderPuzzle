@@ -149,7 +149,8 @@ public class GameBoard {
     public void newGame() {
 
         //Declare pieces array size based off current game size
-        pieces = new Piece[gameSize];
+        if (pieces == null)
+            pieces = new Piece[gameSize];
 
         //Initialize pieces and declare text and image
         for (int i = 0; i < gameSize - 1; i++) {
@@ -162,6 +163,7 @@ public class GameBoard {
 
         gameInProgress = true;
         moveCounter = 0;
+        blankPiece = gameSize-1;
     }
 
     /*******************************************************************

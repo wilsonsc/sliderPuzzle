@@ -70,30 +70,5 @@ public class SelectImageActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        /* -MAY USE LATER-
-        Button verifySelection = (Button)
-            findViewById(R.id.verifySelection);
-
-        //Create a listener for the button
-        verifySelection.setOnClickListener(new View.OnClickListener() {
-
-
-             * Begins the game when the user clicks the button
-             *
-             * @param v the view of the button
-
-            public void onClick(View v) {
-
-                Intent intent = new Intent();
-
-                //If the user selected a custom image, add it to the
-                //intent
-                intent.putExtra("imageID", selected);
-                //Set the result to ok
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });*/
     }
 }
