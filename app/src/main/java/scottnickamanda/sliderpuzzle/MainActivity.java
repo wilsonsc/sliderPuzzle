@@ -101,20 +101,18 @@ public class MainActivity extends AppCompatActivity {
         //Create a listener for the button
         selectImage.setOnClickListener(new View.OnClickListener() {
 
-            /**
-             * Begins the game when the user clicks the button
+            /*********************************************************
+             * Launches image select activity when user clicks button
              *
              * @param v the view of the button
-             */
+             *********************************************************/
             public void onClick(View v) {
 
                 Intent intent = new Intent(getBaseContext(),
                         SelectImageActivity.class);
 
-                //If the user selected a custom board size,
-                //add this as an extra in the intent
-
-                //Begin
+                //Start the activity with the request code corresponding
+                //to an custom image request
                 startActivityForResult(intent, CUSTOM_IMAGE_REQUEST);
 
             }
@@ -126,11 +124,11 @@ public class MainActivity extends AppCompatActivity {
         //Create a listener for the button
         launchGame.setOnClickListener(new View.OnClickListener() {
 
-            /**
+            /**********************************************************
              * Begins the game when the user clicks the button
              *
              * @param v the view of the button
-             */
+             **********************************************************/
             public void onClick(View v) {
 
                 Intent intent = new Intent(getBaseContext(),
@@ -148,11 +146,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*******************************************************************
-     * FIX ME PLEASE
+     * Called when custom image select activity is completed
      *
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param requestCode the code in which the image was requested by
+     * @param resultCode the code indicating if the activity completed
+     * properly
+     * @param data the intent with the attached result data
      ******************************************************************/
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
@@ -165,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 // The user picked a contact.
                 // The Intent's data Uri identifies the contact selected.
                 customImageID = (int) data.getExtras().getLong("imageID");
+                //Set the current image to the image the user has selected
                 currentImage.setImageResource(customImageID);
             }
         }
