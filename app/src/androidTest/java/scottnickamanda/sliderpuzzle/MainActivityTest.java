@@ -1,5 +1,6 @@
 package scottnickamanda.sliderpuzzle;
 
+import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import org.junit.Rule;
@@ -21,6 +22,7 @@ import static org.hamcrest.Matchers.*;
  * Created by Amanda Buhr on 3/19/16.
  */
 @RunWith(AndroidJUnit4.class)
+@LargeTest
 public class MainActivityTest {
 
     @Rule public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class);
@@ -33,6 +35,16 @@ public class MainActivityTest {
     @Test
     public void checkSelectSizeClickable() {
         onView(withId(R.id.selectSize)).check(matches(isClickable()));
+    }
+
+    @Test
+    public void checkStartGameClickable() {
+        onView(withId(R.id.newGame)).check(matches(isClickable()));
+    }
+
+    @Test
+    public void checkCurrentImageDisplayed() {
+        onView(withId(R.id.currentImage)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -54,16 +66,6 @@ public class MainActivityTest {
         onView(withId(R.id.selectSize)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("5x5"))).perform(click());
         onView(withId(R.id.selectSize)).check(matches(withSpinnerText(containsString("5x5"))));
-    }
-
-    @Test
-    public void checkStartGameClickable() {
-        onView(withId(R.id.newGame)).check(matches(isClickable()));
-    }
-
-    @Test
-    public void checkCurrentImageDisplayed() {
-        onView(withId(R.id.currentImage)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -126,6 +128,12 @@ public class MainActivityTest {
         onView(withId(R.id.selectImage)).perform(click());
         onData(anything())
                 .inAdapterView(allOf(withId(R.id.imageSelect), isDisplayed()))
+                .atPosition(4)
+                .check(matches(isDisplayed()))
+                .perform(click());
+        onView(withId(R.id.selectImage)).perform(click());
+        onData(anything())
+                .inAdapterView(allOf(withId(R.id.imageSelect), isDisplayed()))
                 .atPosition(0)
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -185,7 +193,7 @@ public class MainActivityTest {
     @Test
     public void checkIncrementMoveCounterWorks() {
         onView(withId(R.id.newGame)).perform(click());
-        for (int j=0;j<100;j++) {
+        for (int j=0;j<7;j++) {
             for (int i = 0; i < 9; i++) {
                 onData(anything())
                         .inAdapterView(allOf(withId(R.id.gridView), isDisplayed()))
@@ -194,7 +202,7 @@ public class MainActivityTest {
                         .perform(click());
             }
         }
-//        onView(withId(R.id.gridView)).perform(click());
+
         onView(withId(R.string.zeroMoves)).check(doesNotExist());
         pressBack();
     }
