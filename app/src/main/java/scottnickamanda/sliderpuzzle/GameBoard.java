@@ -28,17 +28,7 @@ public class GameBoard {
     private Piece[] pieces;
 
     /** An array holding the individual chopped up image pieces*/
-    private Bitmap[] choppedImage;
-
-    /*******************************************************************
-     * Default constructor without parameters
-     * default 3x3 board will be used
-     ******************************************************************/
-    public GameBoard() {
-
-        gameSize = 9;
-        columns = 3;
-    }
+    private Bitmap[] choppedImage = null;
 
     /*******************************************************************
      * Constructor with custom board size
@@ -183,13 +173,11 @@ public class GameBoard {
             return false;
 
         //Check to see if piece is a valid piece
-        if (pieceNumber + columns == blankPiece || pieceNumber -
+        return pieceNumber + columns == blankPiece || pieceNumber -
                 columns == blankPiece || (pieceNumber + 1 == blankPiece
                 || pieceNumber - 1 == blankPiece) && pieceNumber /
-                columns == blankPiece / columns)
-            return true;
+                columns == blankPiece / columns;
 
-        return false;
     }
 
     /*******************************************************************
@@ -290,7 +278,9 @@ public class GameBoard {
         for (int i = 0; i < pieces.length; i++) {
             pieces[i].setNumber(-1);
         }
-        //Restore the final missing image tile
-        pieces[gameSize-1].setImage(choppedImage[gameSize]);
+        //Verify the game is being played with images
+        if (choppedImage[0] != null)
+            //Restore the final missing image tile
+            pieces[gameSize-1].setImage(choppedImage[gameSize]);
     }
 }

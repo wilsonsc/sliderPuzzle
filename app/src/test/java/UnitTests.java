@@ -15,9 +15,8 @@ import static org.junit.Assert.assertTrue;
 /***********************************************************************
  * JUnit Tests
  *
- * @author Scott Wilson
  **********************************************************************/
-public class GameActivityTest {
+public class UnitTests {
 
     /** Initialize a new GameBoard */
     GameBoard board = new GameBoard(3);
@@ -108,5 +107,17 @@ public class GameActivityTest {
         assertEquals(25, testPieces.length);
         assertEquals("", testPieces[24].toString());
         assertEquals(21, testPieces[20].getNumber());
+    }
+
+
+    //Tests alternate board size (5x5)
+    @Test
+    public void testBoardSize() {
+        board = new GameBoard(5);
+        board.newGame();
+        assertEquals(5, board.getColumns());
+        board = new GameBoard(3);
+        board.newGame();
+        assertEquals(3, board.getColumns());
     }
 }
