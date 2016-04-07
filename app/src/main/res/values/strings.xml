@@ -10,6 +10,7 @@
     <string name="reset">Reset Game</string>
     <string name="returnToMenu">Return to Menu</string>
     <string name="currentImage">Current Image:</string>
+    <string name="zeroTimer">Time: 0</string>
 
     <string-array name="possibleGameSizes">
         <item> 3x3 </item>

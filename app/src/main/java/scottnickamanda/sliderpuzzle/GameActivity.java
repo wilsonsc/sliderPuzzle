@@ -11,6 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /***********************************************************************
  * Main activity class for the Slider Puzzle game
  * Displays pieces on a grid format, requires user interaction, has move
@@ -26,11 +29,18 @@ public class GameActivity extends AppCompatActivity {
     /** TextView to display the number of moves a player has made */
     TextView moveCount;
 
+    /** TextView to display the time player has spent on game */
+    TextView timerText;
+    Timer t;
+
     /** The custom adapter used to display the pieces in the GridView */
     CustomAdapter adapter;
 
     GameBoard board;
     Bitmap image;
+
+    public int seconds = 00;
+    public int minutes = 00;
 
     /*******************************************************************
      * First called when the activity is started
@@ -107,6 +117,34 @@ public class GameActivity extends AppCompatActivity {
         //Set this adapter to the grid
         grid.setAdapter(adapter);
 
+        t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        //Initialize timer based off parameters declared in xml
+                        timerText = (TextView) findViewById(R.id.timerText);
+
+
+                        if (seconds == 60) {
+                            seconds = 0;
+                            minutes = minutes + 1;
+                        }
+                        if (seconds > 10) {
+                            timerText.setText("Time: "+String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                        } else {
+                            timerText.setText("Time: "+String.valueOf(minutes) + ":0" + String.valueOf(seconds));
+                        }
+
+                        seconds += 1;
+                    }
+                });
+            }
+        }, 0, 1000);
+
         /***************************************************************
          * A click listener for the grid
          * When user clicks on a valid piece it will move appropriately
@@ -144,6 +182,7 @@ public class GameActivity extends AppCompatActivity {
                             //Refresh adapter to hide numbers
                             ((BaseAdapter) grid.getAdapter())
                                     .notifyDataSetChanged();
+                            t.cancel();
                         }
                 }
             }

@@ -23,4 +23,15 @@
         android:gravity="center"
         android:layout_below="@id/gridView"
         />
+    <TextView
+            android:id="@+id/timerText"
+            android:stretchMode="columnWidth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/zeroTimer"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:layout_below="@id/movesMade"
+    />
 </RelativeLayout>
