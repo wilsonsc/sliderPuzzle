@@ -264,14 +264,12 @@ public class GameBoard {
      ******************************************************************/
     public int getBoardSize() {
 
-        return gameSize;
+        return (int)(Math.sqrt((double) gameSize));
     }
 
     /*******************************************************************
      * Game has been won, set to not in progress, hide numbers
      * and return the final missing image tile
-     *
-     * @return value of the size of the game
      ******************************************************************/
     public void endGame() {
         gameInProgress = false;

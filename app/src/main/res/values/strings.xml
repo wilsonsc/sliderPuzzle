@@ -11,6 +11,8 @@
     <string name="returnToMenu">Return to Menu</string>
     <string name="currentImage">Current Image:</string>
     <string name="zeroTimer">Time: 0</string>
+    <string name="highScore">High Scores</string>
+    <string name="okay">Okay</string>
 
     <string-array name="possibleGameSizes">
         <item> 3x3 </item>

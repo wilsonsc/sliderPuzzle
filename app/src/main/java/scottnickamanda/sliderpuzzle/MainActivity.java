@@ -1,16 +1,11 @@
 package scottnickamanda.sliderpuzzle;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
+import android.widget.*;
 
 /***********************************************************************
  * The first screen displayed upon opening the application
@@ -89,11 +84,28 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         currentImage = (ImageView) findViewById(R.id.currentImage);
         currentImage.getLayoutParams().height = width;
         currentImage.getLayoutParams().width = width;
         currentImage.setPadding(2, 2, 2, 2);
 
+        //Create a button based off xml defined values
+        Button highScores = (Button) findViewById(R.id.highScores);
+
+        //Create a listener for the button
+        highScores.setOnClickListener(new View.OnClickListener() {
+
+            /*********************************************************
+             * Launches image select activity when user clicks button
+             *
+             * @param v the view of the button
+             *********************************************************/
+             public void onClick(View v) {
+                 Intent intent = new Intent(getBaseContext(), HighScoresActivity.class);
+                 startActivity(intent);
+             }
+        });
 
         //Create a button based off xml defined values
         Button selectImage = (Button) findViewById(R.id.selectImage);

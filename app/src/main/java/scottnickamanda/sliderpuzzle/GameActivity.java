@@ -1,5 +1,6 @@
 package scottnickamanda.sliderpuzzle;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,8 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /***********************************************************************
  * Main activity class for the Slider Puzzle game
@@ -32,6 +34,9 @@ public class GameActivity extends AppCompatActivity {
     /** TextView to display the time player has spent on game */
     TextView timerText;
     Timer t;
+    private int seconds = 0;
+    private int minutes = 0;
+    private int totalSeconds;
 
     /** The custom adapter used to display the pieces in the GridView */
     CustomAdapter adapter;
@@ -39,8 +44,9 @@ public class GameActivity extends AppCompatActivity {
     GameBoard board;
     Bitmap image;
 
-    public int seconds = 00;
-    public int minutes = 00;
+    /** Application Shared Preferences and file name*/
+    private SharedPreferences gamePrefs;
+    public static final String GAME_PREFS = "SliderPuzzleFile";
 
     /*******************************************************************
      * First called when the activity is started
@@ -52,7 +58,11 @@ public class GameActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.game);
+
+        // Instantiate the Shared Preferences object
+        gamePrefs = getSharedPreferences(GAME_PREFS, 0);
 
         //Retrieves information about the physical size of the users
         //device
@@ -117,6 +127,7 @@ public class GameActivity extends AppCompatActivity {
         //Set this adapter to the grid
         grid.setAdapter(adapter);
 
+        totalSeconds = 0;
         t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -127,7 +138,6 @@ public class GameActivity extends AppCompatActivity {
                     public void run() {
                         //Initialize timer based off parameters declared in xml
                         timerText = (TextView) findViewById(R.id.timerText);
-
 
                         if (seconds == 60) {
                             seconds = 0;
@@ -140,6 +150,7 @@ public class GameActivity extends AppCompatActivity {
                         }
 
                         seconds += 1;
+                        totalSeconds += 1;
                     }
                 });
             }
@@ -183,11 +194,29 @@ public class GameActivity extends AppCompatActivity {
                             ((BaseAdapter) grid.getAdapter())
                                     .notifyDataSetChanged();
                             t.cancel();
+                            setHighScore();
                         }
                 }
             }
         });
     }
+
+//    @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//        int instanceSeconds = getTotalSeconds();
+//        savedInstanceState.putInt("totalSeconds",instanceSeconds);
+//        int moves = board.getMoveCounter();
+//        savedInstanceState.putInt("moves",moves);
+//        super.onSaveInstanceState(savedInstanceState);
+//    }
+//
+//    @Override
+//    public void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        totalSeconds = savedInstanceState.getInt("totalSeconds");
+//        int moves = savedInstanceState.getInt("moves");
+//        moveCount.setText("Moves made: " + moves);
+//    }
 
     /*******************************************************************
      * Overrides method in Menu class. Initializes the contents of the
@@ -234,7 +263,55 @@ public class GameActivity extends AppCompatActivity {
         board.shuffleBoard();
         moveCount.setText("Moves made: " +
                 board.getMoveCounter());
+        totalSeconds = 0;
+        minutes = 0;
+        seconds = 0;
         ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
+    }
+
+    private void setHighScore() {
+        int gameTime = getTotalSeconds();
+        String boardSize = board.getBoardSize()+"x"+board.getBoardSize();
+
+        if(gameTime > 0) {
+
+            SharedPreferences.Editor scoreEdit = gamePrefs.edit();
+            DateFormat dateForm = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
+            String dateOutput = dateForm.format(new Date());
+            String scores = gamePrefs.getString(boardSize, "");
+            if(scores.length()>0){
+
+                List<TimerScore> scoreStrings = new ArrayList<>();
+                String[] allScores = scores.split("\\|");
+
+                for(String s : allScores){
+                    String[] parts = s.split(" - ");
+                    scoreStrings.add(new TimerScore(parts[0], Integer.parseInt(parts[1])));
+                }
+
+                TimerScore newScore = new TimerScore(dateOutput, gameTime);
+                scoreStrings.add(newScore);
+
+                Collections.sort(scoreStrings);
+
+                StringBuilder scoreBuild = new StringBuilder("");
+                for(int i=0; i<scoreStrings.size(); i++){
+                    if(i>=10) break;//only want ten
+                    if(i>0) scoreBuild.append("|");//pipe separate the score strings
+                    scoreBuild.append(scoreStrings.get(i).getScoreText());
+                }
+
+                //write to prefs
+                scoreEdit.putString(boardSize, scoreBuild.toString());
+                scoreEdit.apply();
+
+            }
+            else{
+                scoreEdit.putString(boardSize, ""+dateOutput+" - "+gameTime);
+                scoreEdit.apply();
+            }
+
+        }
     }
 
     /*******************************************************************
@@ -274,5 +351,9 @@ public class GameActivity extends AppCompatActivity {
         images[gridSize*gridSize-1] = Bitmap.createBitmap
                 (greyImageResized);
         return images;
+    }
+
+    public int getTotalSeconds() {
+        return totalSeconds;
     }
 }
