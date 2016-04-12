@@ -24,7 +24,7 @@
         android:layout_below="@+id/image" />
 
     <RelativeLayout
-        android:id="@+id/rl"
+        android:id="@+id/layoutButtons"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,20 +66,19 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl2"
+        android:id="@+id/layoutHighScore"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="false"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" >
-        <!--android:layout_below="@+id/rl"-->
 
     <Button
         android:id="@+id/highScores"
-        android:layout_width="70px"
-        android:layout_height="70px"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:text="@string/highScore" />
 
-</RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
