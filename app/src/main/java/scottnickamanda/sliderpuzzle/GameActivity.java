@@ -86,9 +86,14 @@ public class GameActivity extends AppCompatActivity {
             board = new GameBoard(3);
 
         //Initializes the image to be used in this puzzle
-        if (extras.getInt("imageID") != 0 ) {
+        if (extras.getInt("imageID") != 0 && extras.getInt("imageID") != 1) {
             image = BitmapFactory.decodeResource(getResources(),
                     extras.getInt("imageID"));
+        }
+        else if (extras.getByteArray("customImage") != null){
+            byte[] imageArray = extras.getByteArray("customImage");
+            image = BitmapFactory.decodeByteArray(imageArray, 0,
+                   imageArray.length);
         }
         else {
             image = BitmapFactory.decodeResource(getResources(),

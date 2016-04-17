@@ -1,12 +1,21 @@
 package scottnickamanda.sliderpuzzle;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
 
 /***********************************************************************
  * An activity where the user can select an image to use in the game
@@ -16,6 +25,8 @@ public class SelectImageActivity extends AppCompatActivity {
     /** GridView to display the individual pieces in */
     GridView imageGrid;
     long selected;
+    String pathToFile;
+    int LOAD_CUSTOM_IMAGE = 25;
     ImageAdapter adapter;
 
     /*******************************************************************
@@ -70,5 +81,68 @@ public class SelectImageActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        Button importImage = (Button) findViewById(R.id.customImage);
+
+        //Create a listener for the button
+        importImage.setOnClickListener(new View.OnClickListener() {
+
+            /*********************************************************
+             * Launches image select activity when user clicks button
+             *
+             * @param v the view of the button
+             *********************************************************/
+            public void onClick(View v) {
+
+                Intent intent =new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                //Start the activity with the request code corresponding
+                //to an custom image request
+                startActivityForResult(intent, LOAD_CUSTOM_IMAGE);
+
+            }
+        });
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            // When an Image is picked
+            if (requestCode == LOAD_CUSTOM_IMAGE && resultCode == RESULT_OK
+                    && null != data) {
+                // Get the image
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+                Cursor cursor = getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                pathToFile = cursor.getString(columnIndex);
+                cursor.close();
+                Bitmap customImage = BitmapFactory.decodeFile(pathToFile);
+                Intent intent = new Intent();
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                customImage.compress(Bitmap.CompressFormat.PNG, 100, os);
+                intent.putExtra("image", os.toByteArray());
+
+                //Free up resources
+                os.close();
+                customImage.recycle();
+
+                //Set the result to ok
+                setResult(RESULT_OK, intent);
+                finish();
+
+            } else {
+                Toast.makeText(this, "No Image selected",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
+                    .show();
+        }
+
     }
 }

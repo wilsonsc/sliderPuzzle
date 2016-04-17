@@ -1,11 +1,16 @@
 package scottnickamanda.sliderpuzzle;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /***********************************************************************
  * The first screen displayed upon opening the application
@@ -17,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     /** The currently selected custom size of the game, if any*/
     int currentSize;
-    int customImageID;
+    int customImageID = 1;
+    Bitmap customImage;
+    byte[] customImageArray;
     ImageView currentImage;
     final int CUSTOM_IMAGE_REQUEST = 13;
 
@@ -150,6 +157,16 @@ public class MainActivity extends AppCompatActivity {
                 //add them as an extra in the intent
                 intent.putExtra("boardSize",currentSize);
                 intent.putExtra("imageID", customImageID);
+                if (customImageID == 0) {
+                    ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                    customImage.compress(Bitmap.CompressFormat.PNG, 100, bs);
+                    intent.putExtra("customImage", bs.toByteArray());
+                    try {
+                        bs.close();
+                    } catch (IOException e) {
+                        System.out.print("Error");
+                    }
+                }
 
                 //Begin
                 startActivity(intent);
@@ -175,9 +192,20 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // The user picked a contact.
                 // The Intent's data Uri identifies the contact selected.
-                customImageID = (int) data.getExtras().getLong("imageID");
-                //Set the current image to the image the user has selected
-                currentImage.setImageResource(customImageID);
+                if (data.getExtras().getLong("imageID") != 0) {
+                    customImageID = (int) data.getExtras().getLong("imageID");
+                    customImageArray = null;
+                    //Set the current image to the image the user has selected
+                    currentImage.setImageResource(customImageID);
+                }
+                else {
+                    customImageArray = data.getByteArrayExtra("image");
+                    customImageID = 0;
+                    customImage = BitmapFactory.decodeByteArray(customImageArray, 0,
+                            customImageArray.length);
+                    currentImage.setImageBitmap(customImage);
+                }
+
             }
         }
     }

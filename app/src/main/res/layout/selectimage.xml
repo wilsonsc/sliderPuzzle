@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent">
 
+    <Button android:id="@+id/customImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/importCustom"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"/>
+
     <GridView android:id="@+id/imageSelect"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:numColumns="2"
-        android:focusable="false"
-        ></GridView>
+        android:layout_below="@id/customImage"
+        />
 
-</LinearLayout>
+</RelativeLayout>
