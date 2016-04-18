@@ -135,57 +135,13 @@ public class GameActivity extends AppCompatActivity {
         grid.setAdapter(adapter);
 
         // initialize timer
-        t = new Timer();
+        beginTimer();
+//        t = new Timer();
 
         // total seconds of users game, used for saving high score
         totalSeconds = 0;
 
         isVisible = true;
-
-        /*******************************************************************
-         * Timer that starts at time zero and adds a second every 1000
-         * milliseconds.  Updates timer text every second.
-         ******************************************************************/
-        t.scheduleAtFixedRate(new TimerTask() {
-
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        //Initialize timer from xml parameters
-                        timerText = (TextView) findViewById
-                                (R.id.timerText);
-
-                        // when seconds is 60
-                        if (seconds == 60) {
-
-                            // set seconds to 0, add minute
-                            seconds = 0;
-                            minutes = minutes + 1;
-                        }
-
-                        // format text depending on seconds
-                        if (seconds > 9) {
-                            timerText.setText("Time: " + String.valueOf
-                                    (minutes) + ":" + String.valueOf
-                                    (seconds));
-                        } else {
-                            timerText.setText("Time: " + String.valueOf
-                                    (minutes) + ":0" + String.valueOf
-                                    (seconds));
-                        }
-
-                        // add 1 second to timer
-                        // add 1 second to total seconds
-                        seconds += 1;
-                        totalSeconds += 1;
-                    }
-                });
-            }
-        }, 0, 1000);
 
         /***************************************************************
          * A click listener for the grid
@@ -266,18 +222,19 @@ public class GameActivity extends AppCompatActivity {
             case R.id.returnToMenu:
                 finish();
             case R.id.numberVisibility:
-
-                // if numbers are visible
-                if(isVisible) {
-                    // make invisible
-                    adapter.updateView(0);
-                    isVisible = false;
+                if(board.getGameProgress()) {
+                    // if numbers are visible
+                    if (isVisible) {
+                        // make invisible
+                        adapter.updateView(0);
+                        isVisible = false;
+                    } else {
+                        // otherwise make visible
+                        adapter.updateView(1);
+                        isVisible = true;
+                    }
                 }
-                else {
-                    // otherwise make visible
-                    adapter.updateView(1);
-                    isVisible = true;
-                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -288,13 +245,17 @@ public class GameActivity extends AppCompatActivity {
      ******************************************************************/
     private void resetBoard() {
 
+        totalSeconds = 0;
+        minutes = 0;
+        seconds = 0;
+        if(!board.getGameProgress()) {
+            t.purge();
+            beginTimer();
+        }
         board.newGame();
         board.shuffleBoard();
         moveCount.setText("Moves made: " +
                 board.getMoveCounter());
-        totalSeconds = 0;
-        minutes = 0;
-        seconds = 0;
         ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
     }
 
@@ -424,6 +385,54 @@ public class GameActivity extends AppCompatActivity {
         images[gridSize * gridSize - 1] = Bitmap.createBitmap
                 (greyImageResized);
         return images;
+    }
+
+    /*******************************************************************
+     * Timer that starts at time zero and adds a second every 1000
+     * milliseconds.  Updates timer text every second.
+     ******************************************************************/
+    public void beginTimer() {
+        t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        //Initialize timer from xml parameters
+                        timerText = (TextView) findViewById
+                                (R.id.timerText);
+
+                        // when seconds is 60
+                        if (seconds == 60) {
+
+                            // set seconds to 0, add minute
+                            seconds = 0;
+                            minutes = minutes + 1;
+                        }
+
+                        // format text depending on seconds
+                        if (seconds > 9) {
+                            timerText.setText("Time: " + String.valueOf
+                                    (minutes) + ":" + String.valueOf
+                                    (seconds));
+                        } else {
+                            timerText.setText("Time: " + String.valueOf
+                                    (minutes) + ":0" + String.valueOf
+                                    (seconds));
+                        }
+
+                        // add 1 second to timer
+                        // add 1 second to total seconds
+                        seconds += 1;
+                        totalSeconds += 1;
+                    }
+                });
+            }
+        }, 0, 1000);
     }
 
     // getter method for totalSeconds
