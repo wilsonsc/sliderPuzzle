@@ -25,37 +25,29 @@ import java.util.*;
  **********************************************************************/
 public class GameActivity extends AppCompatActivity {
 
-    /**
-     * GridView to display the individual pieces in
-     */
+    /** GridView to display the individual pieces in */
     GridView grid;
 
-    /**
-     * TextView to display the number of moves a player has made
-     */
+    /** TextView to display the number of moves a player has made */
     TextView moveCount;
 
-    /**
-     * TextView to display the time player has spent on game
-     */
+    /** TextView to display the time player has spent on game */
     TextView timerText;
     Timer t;
     private int seconds = 0;
     private int minutes = 0;
     private int totalSeconds;
 
-    /**
-     * The custom adapter used to display the pieces in the GridView
-     */
+    /** The custom adapter used to display the pieces in the GridView */
     CustomAdapter adapter;
 
     GameBoard board;
     Bitmap image;
 
+    /** Boolean representing if text on grid is visible */
     Boolean isVisible;
-    /**
-     * Application Shared Preferences and file name
-     */
+
+    /** Application Shared Preferences and file name */
     private SharedPreferences gamePrefs;
     public static final String GAME_PREFS = "SliderPuzzleFile";
 
@@ -274,11 +266,15 @@ public class GameActivity extends AppCompatActivity {
             case R.id.returnToMenu:
                 finish();
             case R.id.numberVisibility:
+
+                // if numbers are visible
                 if(isVisible) {
-                    adapter.updateView(2);
+                    // make invisible
+                    adapter.updateView(0);
                     isVisible = false;
                 }
                 else {
+                    // otherwise make visible
                     adapter.updateView(1);
                     isVisible = true;
                 }

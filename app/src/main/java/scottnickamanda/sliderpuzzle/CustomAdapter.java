@@ -24,10 +24,7 @@ public class CustomAdapter extends BaseAdapter {
     /** the pieces that the adapter will display */
     private Piece[] pieces;
 
-    private TextView tv;
-
-    private ImageView iv;
-
+    /** Integer representing whether TextView is visible or not */
     private int visibleFlag = 1;
 
     /*******************************************************************
@@ -43,7 +40,11 @@ public class CustomAdapter extends BaseAdapter {
         pieces = board.getPieces();
     }
 
-
+    /*******************************************************************
+     * Sets flag and updates view to change text visibility
+     *
+     * @param flag int representing whether text is visible or not
+     ******************************************************************/
     public void updateView(int flag) {
         visibleFlag = flag;
         notifyDataSetChanged();
@@ -71,22 +72,24 @@ public class CustomAdapter extends BaseAdapter {
             View customView = inflater.inflate(R.layout.pieces, null);
 
             //Adds TextView and ImageView with parameters defined in xml
-            tv = (TextView) customView.findViewById
+            TextView tv = (TextView) customView.findViewById
                     (R.id.textView1);
-            iv = (ImageView) customView.findViewById
+            ImageView iv = (ImageView) customView.findViewById
                     (R.id.imageView1);
 
             //Sets the text of the TextView and image of the ImageView
             tv.setText(pieces[pos].toString());
+            iv.setImageBitmap(pieces[pos].getImage());
 
+            // if flag is 1, set text visible
             if (visibleFlag == 1) {
                 tv.setVisibility(View.VISIBLE);
             }
-            if (visibleFlag == 2) {
+
+            // if flag is 0, set text to invisible
+            if (visibleFlag == 0) {
                 tv.setVisibility(View.INVISIBLE);
             }
-
-            iv.setImageBitmap(pieces[pos].getImage());
 
             //Return the View now that it has all elements attached
             return customView;
@@ -95,18 +98,17 @@ public class CustomAdapter extends BaseAdapter {
         //Otherwise recycles existing view
         else {
             //Adds TextView and ImageView with parameters defined in xml
-            tv = (TextView) convertView.findViewById
+            TextView tv = (TextView) convertView.findViewById
                     (R.id.textView1);
+            ImageView iv = (ImageView) convertView.findViewById
+                    (R.id.imageView1);
 
             if (visibleFlag == 1) {
                 tv.setVisibility(View.VISIBLE);
             }
-            if (visibleFlag == 2) {
+            if (visibleFlag == 0) {
                 tv.setVisibility(View.INVISIBLE);
             }
-
-            iv = (ImageView) convertView.findViewById
-                    (R.id.imageView1);
 
             //Sets the text of the TextView and image of the ImageView
             tv.setText(pieces[pos].toString());
