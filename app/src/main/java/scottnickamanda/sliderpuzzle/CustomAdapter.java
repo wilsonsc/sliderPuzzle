@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +24,12 @@ public class CustomAdapter extends BaseAdapter {
     /** the pieces that the adapter will display */
     private Piece[] pieces;
 
+    private TextView tv;
+
+    private ImageView iv;
+
+    private int visibleFlag = 1;
+
     /*******************************************************************
      * Default constructor
      * Saves parameters for future use
@@ -36,6 +41,12 @@ public class CustomAdapter extends BaseAdapter {
 
         this.context = context;
         pieces = board.getPieces();
+    }
+
+
+    public void updateView(int flag) {
+        visibleFlag = flag;
+        notifyDataSetChanged();
     }
 
     /*******************************************************************
@@ -60,13 +71,21 @@ public class CustomAdapter extends BaseAdapter {
             View customView = inflater.inflate(R.layout.pieces, null);
 
             //Adds TextView and ImageView with parameters defined in xml
-            TextView tv = (TextView) customView.findViewById
+            tv = (TextView) customView.findViewById
                     (R.id.textView1);
-            ImageView iv = (ImageView) customView.findViewById
+            iv = (ImageView) customView.findViewById
                     (R.id.imageView1);
 
             //Sets the text of the TextView and image of the ImageView
             tv.setText(pieces[pos].toString());
+
+            if (visibleFlag == 1) {
+                tv.setVisibility(View.VISIBLE);
+            }
+            if (visibleFlag == 2) {
+                tv.setVisibility(View.INVISIBLE);
+            }
+
             iv.setImageBitmap(pieces[pos].getImage());
 
             //Return the View now that it has all elements attached
@@ -76,9 +95,17 @@ public class CustomAdapter extends BaseAdapter {
         //Otherwise recycles existing view
         else {
             //Adds TextView and ImageView with parameters defined in xml
-            TextView tv = (TextView) convertView.findViewById
+            tv = (TextView) convertView.findViewById
                     (R.id.textView1);
-            ImageView iv = (ImageView) convertView.findViewById
+
+            if (visibleFlag == 1) {
+                tv.setVisibility(View.VISIBLE);
+            }
+            if (visibleFlag == 2) {
+                tv.setVisibility(View.INVISIBLE);
+            }
+
+            iv = (ImageView) convertView.findViewById
                     (R.id.imageView1);
 
             //Sets the text of the TextView and image of the ImageView

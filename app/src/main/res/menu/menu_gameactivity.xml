@@ -3,4 +3,5 @@
       xmlns:tools="http://schemas.android.com/tools" tools:context=".GameActivity">
     <item android:id="@+id/reset" android:title="@string/reset"/>
     <item android:id="@+id/returnToMenu" android:title="@string/returnToMenu"/>
+    <item android:id="@+id/numberVisibility" android:title="@string/setVisibility"/>
 </menu>

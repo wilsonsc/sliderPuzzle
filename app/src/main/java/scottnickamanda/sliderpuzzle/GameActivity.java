@@ -25,26 +25,37 @@ import java.util.*;
  **********************************************************************/
 public class GameActivity extends AppCompatActivity {
 
-    /** GridView to display the individual pieces in */
+    /**
+     * GridView to display the individual pieces in
+     */
     GridView grid;
 
-    /** TextView to display the number of moves a player has made */
+    /**
+     * TextView to display the number of moves a player has made
+     */
     TextView moveCount;
 
-    /** TextView to display the time player has spent on game */
+    /**
+     * TextView to display the time player has spent on game
+     */
     TextView timerText;
     Timer t;
     private int seconds = 0;
     private int minutes = 0;
     private int totalSeconds;
 
-    /** The custom adapter used to display the pieces in the GridView */
+    /**
+     * The custom adapter used to display the pieces in the GridView
+     */
     CustomAdapter adapter;
 
     GameBoard board;
     Bitmap image;
 
-    /** Application Shared Preferences and file name*/
+    Boolean isVisible;
+    /**
+     * Application Shared Preferences and file name
+     */
     private SharedPreferences gamePrefs;
     public static final String GAME_PREFS = "SliderPuzzleFile";
 
@@ -75,7 +86,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Check if user has selected a custom board size
         Bundle extras = getIntent().getExtras();
-        if (extras.getInt("boardSize") != 0){
+        if (extras.getInt("boardSize") != 0) {
             //Apply the user's selection
             board = new GameBoard(extras.getInt("boardSize"));
 
@@ -86,16 +97,15 @@ public class GameActivity extends AppCompatActivity {
             board = new GameBoard(3);
 
         //Initializes the image to be used in this puzzle
-        if (extras.getInt("imageID") != 0 && extras.getInt("imageID") != 1) {
+        if (extras.getInt("imageID") != 0 && extras.getInt("imageID")
+                != 1) {
             image = BitmapFactory.decodeResource(getResources(),
                     extras.getInt("imageID"));
-        }
-        else if (extras.getByteArray("customImage") != null){
+        } else if (extras.getByteArray("customImage") != null) {
             byte[] imageArray = extras.getByteArray("customImage");
             image = BitmapFactory.decodeByteArray(imageArray, 0,
-                   imageArray.length);
-        }
-        else {
+                    imageArray.length);
+        } else {
             image = BitmapFactory.decodeResource(getResources(),
                     R.drawable.cat);
         }
@@ -125,35 +135,59 @@ public class GameActivity extends AppCompatActivity {
 
         //Set size of the columns in GridView based off users device
         //dimensions
-        grid.setColumnWidth(width/board.getColumns());
+        grid.setColumnWidth(width / board.getColumns());
 
-        //Set the custom adapter with this context and the array of pieces
+        //Set custom adapter with this context and the array of pieces
         adapter = new CustomAdapter(this, board);
         //Set this adapter to the grid
         grid.setAdapter(adapter);
 
-        totalSeconds = 0;
+        // initialize timer
         t = new Timer();
+
+        // total seconds of users game, used for saving high score
+        totalSeconds = 0;
+
+        isVisible = true;
+
+        /*******************************************************************
+         * Timer that starts at time zero and adds a second every 1000
+         * milliseconds.  Updates timer text every second.
+         ******************************************************************/
         t.scheduleAtFixedRate(new TimerTask() {
+
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
-                        //Initialize timer based off parameters declared in xml
-                        timerText = (TextView) findViewById(R.id.timerText);
 
+                        //Initialize timer from xml parameters
+                        timerText = (TextView) findViewById
+                                (R.id.timerText);
+
+                        // when seconds is 60
                         if (seconds == 60) {
+
+                            // set seconds to 0, add minute
                             seconds = 0;
                             minutes = minutes + 1;
                         }
-                        if (seconds > 10) {
-                            timerText.setText("Time: "+String.valueOf(minutes) + ":" + String.valueOf(seconds));
+
+                        // format text depending on seconds
+                        if (seconds > 9) {
+                            timerText.setText("Time: " + String.valueOf
+                                    (minutes) + ":" + String.valueOf
+                                    (seconds));
                         } else {
-                            timerText.setText("Time: "+String.valueOf(minutes) + ":0" + String.valueOf(seconds));
+                            timerText.setText("Time: " + String.valueOf
+                                    (minutes) + ":0" + String.valueOf
+                                    (seconds));
                         }
 
+                        // add 1 second to timer
+                        // add 1 second to total seconds
                         seconds += 1;
                         totalSeconds += 1;
                     }
@@ -206,23 +240,6 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        int instanceSeconds = getTotalSeconds();
-//        savedInstanceState.putInt("totalSeconds",instanceSeconds);
-//        int moves = board.getMoveCounter();
-//        savedInstanceState.putInt("moves",moves);
-//        super.onSaveInstanceState(savedInstanceState);
-//    }
-//
-//    @Override
-//    public void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        totalSeconds = savedInstanceState.getInt("totalSeconds");
-//        int moves = savedInstanceState.getInt("moves");
-//        moveCount.setText("Moves made: " + moves);
-//    }
-
     /*******************************************************************
      * Overrides method in Menu class. Initializes the contents of the
      * Game Activity's standard options menu.
@@ -244,24 +261,35 @@ public class GameActivity extends AppCompatActivity {
      *
      * @param item The menu item that was selected
      * @return true  Consume menu processing here
-     *         false Allows normal menu processing to proceed
+     * false Allows normal menu processing to proceed
      ******************************************************************/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-
+        // performs tasks depending on menu item selected
         switch (item.getItemId()) {
             case R.id.reset:
                 resetBoard();
                 return true;
             case R.id.returnToMenu:
                 finish();
+            case R.id.numberVisibility:
+                if(isVisible) {
+                    adapter.updateView(2);
+                    isVisible = false;
+                }
+                else {
+                    adapter.updateView(1);
+                    isVisible = true;
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-
+    /*******************************************************************
+     * Begins a new game. Shuffles board, resets timer and move counter.
+     ******************************************************************/
     private void resetBoard() {
 
         board.newGame();
@@ -274,45 +302,89 @@ public class GameActivity extends AppCompatActivity {
         ((BaseAdapter) grid.getAdapter()).notifyDataSetChanged();
     }
 
+    /*******************************************************************
+     * Saves player's high score based on board size. Saves game time as
+     * total seconds along with board size and date. Saves all these as
+     * a string into array lists, sorted by board size.
+     ******************************************************************/
     private void setHighScore() {
+
+        // sets game time to total seconds of players game
         int gameTime = getTotalSeconds();
-        String boardSize = board.getBoardSize()+"x"+board.getBoardSize();
 
-        if(gameTime > 0) {
+        // string used for sorting high scores array lists
+        String boardSize = board.getBoardSize() + "x"
+                + board.getBoardSize();
 
+        // if the game is a valid game
+        if (gameTime > 0) {
+
+            // initializes a shared preferences editor that will
+            // store the string
             SharedPreferences.Editor scoreEdit = gamePrefs.edit();
-            DateFormat dateForm = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
-            String dateOutput = dateForm.format(new Date());
-            String scores = gamePrefs.getString(boardSize, "");
-            if(scores.length()>0){
 
+            // sets date format to US
+            DateFormat dateForm = new SimpleDateFormat
+                    ("dd MMMM yyyy", Locale.US);
+
+            // sets this format to date output to be used
+            String dateOutput = dateForm.format(new Date());
+
+            // pulls previously saved array list of selected board size
+            String scores = gamePrefs.getString(boardSize, "");
+
+            // if previously saved scores exist
+            if (scores.length() > 0) {
+
+                // instantiates new array list and array for sorting
                 List<TimerScore> scoreStrings = new ArrayList<>();
                 String[] allScores = scores.split("\\|");
 
-                for(String s : allScores){
+                // adds previously saved scores into scoreStrings
+                for (String s : allScores) {
                     String[] parts = s.split(" - ");
-                    scoreStrings.add(new TimerScore(parts[0], Integer.parseInt(parts[1])));
+                    scoreStrings.add(new TimerScore(parts[0],
+                            Integer.parseInt(parts[1])));
                 }
 
-                TimerScore newScore = new TimerScore(dateOutput, gameTime);
+                // creates a new saved score from user's game
+                TimerScore newScore = new TimerScore(dateOutput,
+                        gameTime);
+
+                // adds new score to array list of all scores
                 scoreStrings.add(newScore);
 
+                // sorts array list of all scores
                 Collections.sort(scoreStrings);
 
+                // initialize new scorebuilder
                 StringBuilder scoreBuild = new StringBuilder("");
-                for(int i=0; i<scoreStrings.size(); i++){
-                    if(i>=10) break;//only want ten
-                    if(i>0) scoreBuild.append("|");//pipe separate the score strings
-                    scoreBuild.append(scoreStrings.get(i).getScoreText());
+
+                // cuts array list of saved scores to the top ten scores
+                for (int i = 0; i < scoreStrings.size(); i++) {
+
+                    //only want ten top scores
+                    if (i >= 10) break;
+
+                    //pipe separates the score strings
+                    if (i > 0) scoreBuild.append("|");
+
+                    // builds new high score string for saving
+                    scoreBuild.append(scoreStrings.get(i)
+                            .getScoreText());
                 }
 
-                //write to prefs
+                //write top ten high scores to prefs
                 scoreEdit.putString(boardSize, scoreBuild.toString());
                 scoreEdit.apply();
-
             }
-            else{
-                scoreEdit.putString(boardSize, ""+dateOutput+" - "+gameTime);
+
+            // else if no saved scores exist
+            else {
+
+                // write users score to prefs
+                scoreEdit.putString(boardSize, "" + dateOutput + " - "
+                        + gameTime);
                 scoreEdit.apply();
             }
 
@@ -322,29 +394,29 @@ public class GameActivity extends AppCompatActivity {
     /*******************************************************************
      * Chops the image to be used for the game up into smaller pieces
      *
-     * @param picture the picture in which is to be chopped up
-     * @param gridSize size of the grid the game will be played on
+     * @param picture   the picture in which is to be chopped up
+     * @param gridSize  size of the grid the game will be played on
      * @param pieceSize the physical dimensions in pixels of the pieces
      * @return an array containing the chopped up pieces
      ******************************************************************/
-    Bitmap[] splitBitmap(Bitmap picture,int gridSize, int pieceSize) {
+    Bitmap[] splitBitmap(Bitmap picture, int gridSize, int pieceSize) {
 
         //Create a bitmap image based upon the original image
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(picture,
-                pieceSize*gridSize, pieceSize*gridSize, true);
+                pieceSize * gridSize, pieceSize * gridSize, true);
 
         //Create the array in which the chopped images will be saved in
-        Bitmap[] images = new Bitmap[gridSize*gridSize+1];
+        Bitmap[] images = new Bitmap[gridSize * gridSize + 1];
 
         //Iterate and create images row by row
         for (int row = 0; row < gridSize; row++) {
             for (int column = 0; column < gridSize; column++) {
-                images[row*gridSize+column] = Bitmap.createBitmap
+                images[row * gridSize + column] = Bitmap.createBitmap
                         (scaledBitmap, column * pieceSize,
                                 row * pieceSize, pieceSize, pieceSize);
             }
         }
-        images[gridSize*gridSize] = images[gridSize*gridSize-1];
+        images[gridSize * gridSize] = images[gridSize * gridSize - 1];
 
         //Create a bitmap image for the blank piece and resize
         Bitmap greyImage = BitmapFactory.decodeResource(getResources(),
@@ -353,11 +425,12 @@ public class GameActivity extends AppCompatActivity {
                 pieceSize, pieceSize, true);
 
         //Assign it to the array
-        images[gridSize*gridSize-1] = Bitmap.createBitmap
+        images[gridSize * gridSize - 1] = Bitmap.createBitmap
                 (greyImageResized);
         return images;
     }
 
+    // getter method for totalSeconds
     public int getTotalSeconds() {
         return totalSeconds;
     }
