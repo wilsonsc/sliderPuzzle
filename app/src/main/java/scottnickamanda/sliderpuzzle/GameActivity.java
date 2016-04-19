@@ -182,6 +182,7 @@ public class GameActivity extends AppCompatActivity {
                                     .notifyDataSetChanged();
                             t.cancel();
                             setHighScore();
+                            t.purge();
                         }
                 }
             }
@@ -220,6 +221,8 @@ public class GameActivity extends AppCompatActivity {
                 resetBoard();
                 return true;
             case R.id.returnToMenu:
+                t.cancel();
+                t.purge();
                 finish();
             case R.id.numberVisibility:
                 if(board.getGameProgress()) {
@@ -249,7 +252,6 @@ public class GameActivity extends AppCompatActivity {
         minutes = 0;
         seconds = 0;
         if(!board.getGameProgress()) {
-            t.purge();
             beginTimer();
         }
         board.newGame();
