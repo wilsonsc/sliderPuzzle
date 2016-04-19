@@ -110,7 +110,15 @@ public class HighScoresActivity extends Activity {
                 int time = Integer.parseInt(parts[1]);
                 int minutes = time / 60;
                 int seconds = time % 60;
-                String newTime = minutes + ":" + seconds;
+
+                String newTime;
+                if(seconds > 9) {
+                    newTime = minutes + ":" + seconds;
+                }
+                else {
+                    newTime = minutes + ":0" + seconds;
+                }
+
                 s = parts[0] + "-" + newTime;
 
                 scoreBuild.append(s + "\n");

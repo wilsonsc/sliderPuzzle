@@ -9,12 +9,10 @@ public class TimerScore implements Comparable<TimerScore> {
 
     private String scoreDate;
     public int scoreTime;
-    public String boardSize;
 
     public TimerScore(String date, int time){
         scoreDate = date;
         scoreTime = time;
-//        boardSize = size;
     }
 
     public int compareTo(TimerScore sc){

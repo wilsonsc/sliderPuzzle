@@ -416,13 +416,11 @@ public class GameActivity extends AppCompatActivity {
 
                         // format text depending on seconds
                         if (seconds > 9) {
-                            timerText.setText("Time: " + String.valueOf
-                                    (minutes) + ":" + String.valueOf
-                                    (seconds));
+                            timerText.setText("Time: " + minutes + ":"
+                                    + seconds);
                         } else {
-                            timerText.setText("Time: " + String.valueOf
-                                    (minutes) + ":0" + String.valueOf
-                                    (seconds));
+                            timerText.setText("Time: " + minutes + ":0"
+                                    + seconds);
                         }
 
                         // add 1 second to timer
