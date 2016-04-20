@@ -1,7 +1,6 @@
 package scottnickamanda.sliderpuzzle;
 
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -226,6 +225,7 @@ public class GameActivity extends AppCompatActivity {
                 t.cancel();
                 t.purge();
                 finish();
+                return true;
             case R.id.numberVisibility:
                 if(board.getGameProgress()) {
                     // if numbers are visible
