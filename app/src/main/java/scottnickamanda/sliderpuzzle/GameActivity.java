@@ -1,6 +1,7 @@
 package scottnickamanda.sliderpuzzle;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -221,6 +222,7 @@ public class GameActivity extends AppCompatActivity {
                 resetBoard();
                 return true;
             case R.id.returnToMenu:
+                board = null;
                 t.cancel();
                 t.purge();
                 finish();
@@ -373,6 +375,7 @@ public class GameActivity extends AppCompatActivity {
                 images[row * gridSize + column] = Bitmap.createBitmap
                         (scaledBitmap, column * pieceSize,
                                 row * pieceSize, pieceSize, pieceSize);
+
             }
         }
         images[gridSize * gridSize] = images[gridSize * gridSize - 1];
@@ -386,6 +389,10 @@ public class GameActivity extends AppCompatActivity {
         //Assign it to the array
         images[gridSize * gridSize - 1] = Bitmap.createBitmap
                 (greyImageResized);
+
+        greyImage.recycle();
+        greyImageResized.recycle();
+        scaledBitmap.recycle();
         return images;
     }
 
@@ -435,7 +442,11 @@ public class GameActivity extends AppCompatActivity {
         }, 0, 1000);
     }
 
-    // getter method for totalSeconds
+    /*******************************************************************
+     * Getter method for number of seconds
+     *
+     * @return value representing the number of seconds
+     ******************************************************************/
     public int getTotalSeconds() {
         return totalSeconds;
     }

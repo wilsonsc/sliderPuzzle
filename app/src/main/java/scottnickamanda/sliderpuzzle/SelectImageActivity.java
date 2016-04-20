@@ -16,6 +16,9 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /***********************************************************************
  * An activity where the user can select an image to use in the game
@@ -104,9 +107,20 @@ public class SelectImageActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*******************************************************************
+     * Runs when an activity that was called completes
+     *
+     * @param requestCode the numerical code of the activity result request
+     * @param resultCode the result code
+     * @param data the intent which stores the data to be used
+     ******************************************************************/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            int width = dm.widthPixels;
             // When an Image is picked
             if (requestCode == LOAD_CUSTOM_IMAGE && resultCode == RESULT_OK
                     && null != data) {
@@ -121,15 +135,43 @@ public class SelectImageActivity extends AppCompatActivity {
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 pathToFile = cursor.getString(columnIndex);
                 cursor.close();
-                Bitmap customImage = BitmapFactory.decodeFile(pathToFile);
+                //Reduce the size of the image
+                Bitmap customImage = decodeFile(new File(pathToFile), 150);
+                Bitmap image;
+
+                //Crop the image from the center
+                if (customImage.getWidth() >= customImage.getHeight()){
+                    //Image is wider than tall
+                     image = Bitmap.createBitmap(
+                             customImage,
+                             customImage.getWidth()/2 - customImage.getHeight()/2,
+                            0,
+                             customImage.getHeight(),
+                             customImage.getHeight()
+                    );
+
+                }else{
+                    //Image is taller than wide
+                    image = Bitmap.createBitmap(
+                            customImage,
+                            0,
+                            customImage.getHeight()/2 - customImage.getWidth()/2,
+                            customImage.getWidth(),
+                            customImage.getWidth()
+                    );
+                }
+                //Intent to add the byte array of the image
                 Intent intent = new Intent();
+                //Stream to hold the bytes of picture
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
-                customImage.compress(Bitmap.CompressFormat.PNG, 100, os);
+                image.compress(Bitmap.CompressFormat.PNG, 100, os);
+                //Add array to intent
                 intent.putExtra("image", os.toByteArray());
 
                 //Free up resources
                 os.close();
                 customImage.recycle();
+                image.recycle();
 
                 //Set the result to ok
                 setResult(RESULT_OK, intent);
@@ -144,5 +186,34 @@ public class SelectImageActivity extends AppCompatActivity {
                     .show();
         }
 
+    }
+
+    /*******************************************************************
+     * Reduce the file size of a custom image
+     *
+     * @param f the path to the file
+     * @param size the dimensions to make the image
+     * @return
+     ******************************************************************/
+    private Bitmap decodeFile(File f, int size) {
+        try {
+            // Decode image size
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f), null, opt);
+
+            // Find the correct scale value.
+            int scale = 1;
+            while(opt.outWidth / scale / 2 >= size &&
+                    opt.outHeight / scale / 2 >= size) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options opt2 = new BitmapFactory.Options();
+            opt2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, opt2);
+        } catch (FileNotFoundException e) {}
+        return null;
     }
 }
