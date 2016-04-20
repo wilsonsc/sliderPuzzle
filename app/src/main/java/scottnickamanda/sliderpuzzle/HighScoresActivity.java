@@ -49,7 +49,7 @@ public class HighScoresActivity extends Activity {
                 android.R.layout.simple_spinner_item, sizes);
 
         //Sets the dropdown box based off xml defined values
-        Spinner gameSize = (Spinner) findViewById(R.id.selectSize);
+        Spinner gameSize = (Spinner) findViewById(R.id.selectSizeHighScore);
 
         //Sets the adapter for the dropdown box
         gameSize.getLayoutParams().width = width / 5;

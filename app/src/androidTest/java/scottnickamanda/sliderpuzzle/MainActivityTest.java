@@ -193,7 +193,7 @@ public class MainActivityTest {
     @Test
     public void checkIncrementMoveCounterWorks() {
         onView(withId(R.id.newGame)).perform(click());
-        for (int j=0;j<7;j++) {
+        for (int j=0;j<5;j++) {
             for (int i = 0; i < 9; i++) {
                 onData(anything())
                         .inAdapterView(allOf(withId(R.id.gridView), isDisplayed()))
@@ -223,5 +223,78 @@ public class MainActivityTest {
         onView(withId(R.id.selectImage)).check(matches(isDisplayed()));
         onView(withId(R.id.currentImage)).check(matches(isDisplayed()));
         onView(withId(R.id.selectSize)).check(matches(isDisplayed()));
+        onView(withId(R.id.newGame)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void checkHideNumbersDisplayed() {
+        onView(withId(R.id.newGame)).perform(click());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText("Show/Hide Numbers")).check(matches(isDisplayed()));
+        pressBack();
+    }
+
+    @Test
+    public void checkHideNumbersWorks() {
+        onView(withId(R.id.newGame)).perform(click());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText("Show/Hide Numbers")).check(matches(isEnabled()));
+        pressBack();
+    }
+
+    @Test
+    public void checkImportOwnImageClickable() {
+        onView(withId(R.id.selectImage)).perform(click());
+        onView(withId(R.id.customImage)).check(matches(isEnabled()));
+        pressBack();
+    }
+
+    @Test
+    public void checkHighScoreButton() {
+        onView(withId(R.id.highScores)).check(matches(isClickable()));
+    }
+
+    @Test
+    public void checkHighScoresDisplays() {
+        onView(withId(R.id.highScores)).perform(click());
+        onView(withId(R.id.highScoresList)).check(matches(isDisplayed()));
+        onView(withId(R.id.highScoresHeader)).check(matches(isDisplayed()));
+        onView(withId(R.id.okBtn)).check(matches(isDisplayed()));
+        onView(withId(R.id.textSelect)).check(matches(isDisplayed()));
+        pressBack();
+    }
+
+    @Test
+    public void checkHighScoreSpinner3x3() {
+        onView(withId(R.id.highScores)).perform(click());
+        onView(withText("Game Size:")).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("3x3"))).perform(click());
+        onView(withText("3x3")).check(matches(isDisplayed()));
+        pressBack();
+    }
+
+    @Test
+    public void checkHighScoreSpinner4x4() {
+        onView(withId(R.id.highScores)).perform(click());
+        onView(withText("Game Size:")).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("4x4"))).perform(click());
+        onView(withText("4x4")).check(matches(isDisplayed()));
+        pressBack();
+    }
+
+    @Test
+    public void checkHighScoreSpinner5x5() {
+        onView(withId(R.id.highScores)).perform(click());
+        onView(withText("Game Size:")).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("5x5"))).perform(click());
+        onView(withText("5x5")).check(matches(isDisplayed()));
+        pressBack();
+    }
+
+    @Test
+    public void checkHighScoreOkBtnClickable() {
+        onView(withId(R.id.highScores)).perform(click());
+        onView(withText("Okay")).check(matches(isClickable()));
+        pressBack();
     }
 }
